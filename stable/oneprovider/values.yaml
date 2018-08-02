@@ -89,6 +89,20 @@ cluster_config:
   workers: [ ]
   databases: [ ]
 
+# NOTE: below configuration is mainly used by one-env tool.
+# Determines which onedata components should be started from pre-compiled sources
+# or pre-installed packages inside dockers. When enabled sources should be
+# copied to pod and after that appropriate /tmp/sources_ready.txt file
+# should be created.
+sources_cfg:
+  enabled: false
+  nodes:
+    n0:
+      sources:
+        - name: op-panel
+        - name: op-worker
+        - name: cluster-manager
+
 # Erlang configuration file, which values will overide
 # respected default values in the app.conf of Onepanel
 # The idea is to overite as needed small parts when needed

@@ -156,6 +156,10 @@ spec:
             echo {{ template "fullname" . }}-{{ sub (.Values.onezone_nodes_count) 1 }} ;
             if [[ "$HOSTNAME" != {{ template "fullname" . }}-{{ sub (.Values.onezone_nodes_count) 1 }} ]]; then export ONEPANEL_BATCH_MODE="false" ; fi ;
             env ;
+            {{- if (index .Values "sources_cfg" "enabled") }}
+              while [ ! -f /tmp/sources_ready.txt ]; do   sleep 1; done ;
+              export ONEPANEL_OVERRIDE=$(cat /tmp/sources_ready.txt) ;
+            {{- end }}
             /root/onezone.sh ;
             cat /var/log/oz_panel/info.log ;
             exit 1 ;
