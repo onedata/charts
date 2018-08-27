@@ -14,6 +14,10 @@ wait_for:
   image: onedata/k8s-wait-for:v1.1
   imagePullPolicy: IfNotPresent
 
+# Specifies if ready check job should wait for onezone service to start
+wait_for_onezone:
+  enabled: true
+
 # onezone name, if empty defaults to a chart name
 name: ''
 

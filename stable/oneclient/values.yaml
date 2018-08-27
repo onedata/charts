@@ -9,6 +9,18 @@ wait_for:
   image: onedata/k8s-wait-for:v1.1
   imagePullPolicy: IfNotPresent
 
+# Wait for onezone service to start
+wait_for_onezone:
+  enabled: true
+
+# Wait for token dispenser service to start
+wait_for_token_dispenser:
+  enabled: true
+
+# Wait for oneprovider service to start
+wait_for_oneprovider:
+  enabled: true
+
 # Number of oneclients to launch
 # each oneclient pod will be identical 
 replicas: 1

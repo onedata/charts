@@ -47,13 +47,18 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
 {{ include "imagePullSecrets" . | indent 6 }}
+      {{- if or (index .Values "wait_for_onezone" "enabled") (or (index .Values "wait_for_token_dispenser" "enabled") (index .Values "wait_for_oneprovider" "enabled")) }}
       initContainers:
+      {{- end }}
+      {{- if (index .Values "wait_for_onezone" "enabled") }}
         - name: wait-for-onezone
           image: {{ .Values.wait_for.image }}
           imagePullPolicy: {{ template "imagePullPolicy" dict "root" . "context" .Values.wait_for }}
           args:
             - "job"
             - "{{ template "onezone_name" . }}-ready-check"
+      {{- end }}
+      {{- if (index .Values "wait_for_token_dispenser" "enabled") }}
         - name: wait-for-token-dispenser
           image: {{ .Values.wait_for.image }}
           imagePullPolicy: {{ template "imagePullPolicy" dict "root" . "context" .Values.wait_for }}
@@ -61,12 +66,15 @@ spec:
             - "pod"
             - >
               -lapp={{ template "token-dispenser_name" . }}
+      {{- end }}
+      {{- if (index .Values "wait_for_oneprovider" "enabled") }}
         - name: wait-for-oneprovider
           image: {{ .Values.wait_for.image }}
           imagePullPolicy: {{ template "imagePullPolicy" dict "root" . "context" .Values.wait_for }}
           args:
             - "job"
-            - "{{ template "oneprovider_name" . }}-ready-check" 
+            - "{{ template "oneprovider_name" . }}-ready-check"
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: {{ .Values.image }}

@@ -6,6 +6,10 @@ wait_for:
   image: onedata/k8s-wait-for:v1.1
   imagePullPolicy: IfNotPresent
 
+# Specifies if init job should wait for keycloak service to start
+wait_for_keycloak:
+  enabled: true
+
 # The configuration of a realm and an open-id client that is created
 # by an initialization job.
 # a initialization job. The format of this list must leave place

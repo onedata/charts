@@ -38,13 +38,17 @@ spec:
       {{- end }}  
       restartPolicy: Never
 {{ include "imagePullSecrets" . | indent 6 }}
+      {{- if (index .Values "wait_for_s3" "enabled") }}
       initContainers:
+      {{- end }}
+      {{- if (index .Values "wait_for_s3" "enabled") }}
         - name: wait-for-{{ .Chart.Name }}
           image: {{ .Values.wait_for.image }}
           imagePullPolicy: {{ template "imagePullPolicy" dict "root" . "context" .Values.wait_for }}
           args:
             - "pod"
             - "-lapp={{ template "fullname" . }}"
+      {{- end }}
       containers:
       - name: aws
         image: {{ .Values.aws_client_image }}

@@ -9,6 +9,26 @@ wait_for:
   image: onedata/k8s-wait-for:v1.1
   imagePullPolicy: IfNotPresent
 
+# Specifies if users job should wait for release to start
+wait_for_release:
+  enabled: true
+
+# Specifies if supports job should wait for luma service to start
+wait_for_luma:
+  enabled: true
+
+# Specifies if spaces job should wait for groups job to end
+wait_for_groups:
+  enabled: true
+
+# Specifies if luma job should wait for spaces job to end
+wait_for_spaces:
+  enabled: true
+
+# Specifies if groups job should wait for users job to end
+wait_for_users:
+  enabled: true
+
 # You can enable automatic deployment od the environment
 # that this chart initializes
 onedata-3p:

@@ -41,6 +41,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
+      {{- if (index .Values "wait_for_groups" "enabled") }}
       initContainers:
         - name: wait-for-groups
           image: {{ .Values.wait_for.image }}
@@ -48,6 +49,7 @@ spec:
           args:
             - "job"
             - "{{ template "fullname" . }}-groups"
+      {{- end }}
 {{ include "imagePullSecrets" . | indent 6 }}
       restartPolicy: Never
       containers:

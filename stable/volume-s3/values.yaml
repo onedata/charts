@@ -11,6 +11,10 @@ wait_for:
   image: onedata/k8s-wait-for:v1.1
   imagePullPolicy: IfNotPresent
 
+# Specifies if init job should wait for s3 service to start
+wait_for_s3:
+  enabled: true
+
 key_id: accessKey
 access_key: verySecretKey
 bucketName: test

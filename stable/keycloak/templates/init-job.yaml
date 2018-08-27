@@ -27,7 +27,10 @@ spec:
       restartPolicy: Never
       hostNetwork: {{ template "hostNetwork" . }}
 {{ include "imagePullSecrets" . | indent 6 }}
+      {{- if (index .Values "wait_for_keycloak" "enabled") }}
       initContainers:
+      {{- end }}
+      {{- if (index .Values "wait_for_keycloak" "enabled") }}
       - name: wait-for-{{ .Chart.Name }}
         image: {{ .Values.wait_for.image }}
         imagePullPolicy: {{ template "imagePullPolicy" dict "root" . "context" .Values.wait_for }}
@@ -37,6 +40,7 @@ spec:
           - >
             while ! curl --output /dev/null --silent --connect-timeout 3 http://{{ template "keycloak_name" . }}; do echo "$(date) Trying keycloak http://{{ template "keycloak_name" . }} port 80...." ; done;
             echo "Keycloak http://{{ template "keycloak_name" . }} port 80 open!"
+      {{- end }}
       containers:
       - name: keycloak-init
         image: {{ .Values.wait_for.image }}
