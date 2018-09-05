@@ -1,4 +1,5 @@
-
+{{- if (index .Values "oneprovider_ready_check" "enabled") }}
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -26,10 +27,7 @@ spec:
       restartPolicy: Never
       hostNetwork: {{ template "hostNetwork" . }}
 {{ include "imagePullSecrets" . | indent 6 }}
-      {{- if (index .Values "wait_for_oneprovider" "enabled") }}
       initContainers:
-      {{- end }}
-      {{- if (index .Values "wait_for_oneprovider" "enabled") }}
       - name: wait-for-{{ .Chart.Name }}
         image: {{ .Values.wait_for.image }}
         imagePullPolicy: {{ template "imagePullPolicy" dict "root" . "context" .Values.wait_for }}
@@ -39,7 +37,6 @@ spec:
           - >
             user="" ;
             while [ "$deployed" != "true" ] ; do deployed="$(curl -k  -sS  -X GET 'https://{{ template "oneprovider_name" . }}:9443/configuration' | jq .'deployed')" ; echo "Waiting for https://{{ template "oneprovider_name" . }}:9443/configuration to return something..." ; echo "returned=$deployed" ; sleep 2 ; done ;
-      {{- end }}
       containers:
       - name: oneprovider-ready-check
         image: alpine:3.6
@@ -49,3 +46,4 @@ spec:
           - "-c"
           - >
             echo 'all ok, exiting' ;
+{{- end }}

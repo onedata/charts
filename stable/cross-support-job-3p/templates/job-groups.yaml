@@ -113,5 +113,3 @@ spec:
             echo "]. Success." ;
             {{- end }}
           {{- end }}
-
-

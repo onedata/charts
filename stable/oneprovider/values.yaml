@@ -10,8 +10,8 @@ wait_for:
   image: onedata/k8s-wait-for:v1.1
   imagePullPolicy: IfNotPresent
 
-# Specifies if ready check job should wait for oneprovider service to start
-wait_for_oneprovider:
+# Specifies if ready check job should be created.
+oneprovider_ready_check:
   enabled: true
 
 # When running multiple copies of oneprovider as a part of a helm release
