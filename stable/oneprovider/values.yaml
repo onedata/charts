@@ -129,6 +129,14 @@ generate-certificates:
   image: onedata/certificate-init-container:8434eb0
   imagePullPolicy: IfNotPresent
   
+# Create a PVC and persist /volumes/persistence
+# Atm. PVC expects to find a matching PV, which is assumed is 
+# to be local persistent volume. Those should be created and managed using this:
+# https://github.com/kubernetes-incubator/external-storage/tree/master/local-volume/helm
+persistence:
+  enabled: false
+  size: 20Gi
+  
 # If set true, oneprovider will not be deployed on the same node as other oneproviders
 # or onezones that are part of this deployment
 onedata_anti_affinity_enabled: false

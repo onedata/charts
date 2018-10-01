@@ -190,6 +190,14 @@ spec:
                 onepanel_ready() { sleep 5 ; exit 0 ; } ;
                 if [[ "$HOSTNAME" == {{ template "fullname" . }}-{{ sub (.Values.oneprovider_nodes_count) 1 }} ]]; then exit 0 ; else onepanel_ready ; fi ;
         env:
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
           - name: ONEPANEL_LOG_LEVEL
             value: {{ default "info" .Values.log_level | quote }}
           - name: ONEPANEL_DEBUG_MODE
@@ -208,6 +216,11 @@ spec:
                 name: {{ template "fullname" . }}-config
                 key: ONEPROVIDER_CONFIG
         volumeMounts:
+    {{- if .Values.persistence.enabled }}
+          - name: persistence
+            mountPath: /volumes/persistence
+            subPath: $(NAMESPACE)-$(POD_NAME)
+    {{- end }}
           - name: config-map
             mountPath: /etc/op_panel/overlay.config
             subPath: panel-overlay.config
@@ -281,6 +294,11 @@ spec:
         {{- end }}
       {{- end }}
       volumes:
+    {{- if .Values.persistence.enabled }}
+      - name: persistence
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}-persistence-pvc
+    {{- end }}
       - name: config-map
         configMap:
           name: {{ template "fullname" . }}-config
