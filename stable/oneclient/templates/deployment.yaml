@@ -96,7 +96,7 @@ spec:
            mount_dir="/mnt/oneclient/{{ $user.name }}";
            mkdir -p "$mount_dir";
            echo "Mounting oneclient in $mount_dir for user={{ $user.name }}, from idp=$idp, using TOKEN=$ONECLIENT_ACCESS_TOKEN.";
-           oneclient -t $ONECLIENT_ACCESS_TOKEN "$mount_dir";
+           oneclient -t $ONECLIENT_ACCESS_TOKEN {{ $.Values.oneclientFlags }} "$mount_dir";
            while ! mount | grep -q "$mount_dir" ; do
            i=1;
            max_i=30;
@@ -122,6 +122,17 @@ spec:
           - mountPath: /oneclient-mount.sh
             subPath: oneclient-mount.sh
             name: oneclient-mount
+      {{- if .Values.directIO.nfs.enabled }}
+          - mountPath: {{ .Values.directIO.nfs.mount_path }}
+            name: nfs
+      {{- end }}
+      volumes:
+      - name: oneclient-mount
+        configMap:
+          name: {{ template "fullname" . }}-config
+          items:
+          - key: oneclient-mount.sh
+            path: oneclient-mount.sh
             readOnly: true
       volumes:
       - name: oneclient-mount
@@ -130,3 +141,8 @@ spec:
           items:
           - key: oneclient-mount.sh
             path: oneclient-mount.sh
+    {{- if .Values.directIO.nfs.enabled }}
+      - name: nfs
+        persistentVolumeClaim:
+          claimName: {{ template "releaseName" . }}-oneprovider-{{ .Values.suffix }}-nfs-pvc
+    {{- end }}

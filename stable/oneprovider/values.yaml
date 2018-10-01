@@ -148,6 +148,10 @@ oneclient:
   enabled: false
   onezone_service_url: *onezone_service_url
   suffix: *providerSuffix
+  directIO:
+    nfs:
+      enable: true
+      mount_path: *container_mount_path
   token_dispenser_service_url:
     type: auto-generate
     disableSuffix: true
@@ -240,7 +244,7 @@ volume-ceph:
 volume-nfs:
   enabled: false
   suffix: *providerSuffix
-  container_mount_path: /volumes/nfs
+  container_mount_path: &container_mount_path /volumes/nfs
   storage_claim: 1T
   mount_options: "soft,intr,timeo=10"
   luma-enabled: *luma_enabled_nfs

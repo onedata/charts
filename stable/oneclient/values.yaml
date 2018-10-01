@@ -30,6 +30,17 @@ tolerations: {}
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
 
+# Those options will be passed to oneclient executable
+oneclientFlags: ""
+
+# Atm. this only controls NFS
+directIO:
+  # Should the same NFS PVC as used by the oneprovider that this oneclient
+  # connects to be mounted in this oneclient
+  nfs:
+    enabled: false
+    mount_path: /volumes/nfs
+
 # If token dispenser is used it's url should not have
 # the oneprovider suffix prepended
 token_dispenser_service_url:
