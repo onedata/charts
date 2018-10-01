@@ -86,7 +86,7 @@ data:
       {{- if (index .Values "volume-s3" "enabled") }}
         s3:
           type: s3
-          hostname: {{ template "volume-s3_name" . }}:{{ index .Values "volume-s3" "port" }}
+          hostname: {{ template "volume-s3_name" . }}.{{ $.Release.Namespace }}:{{ index .Values "volume-s3" "port" }}
           bucketName: {{ index .Values "volume-s3" "bucketName" }}
           accessKey: {{ index .Values "volume-s3" "key_id" }}
           secretKey: {{ index .Values "volume-s3" "access_key" }}
@@ -104,7 +104,7 @@ data:
           type: cephrados
           username: {{ index .Values "volume-ceph" "username" }}
           key: {{ index .Values "volume-ceph" "key" }}
-          monitorHostname: {{ template "volume-ceph_name" . }}
+          monitorHostname: {{ template "volume-ceph_name" . }}.{{ $.Release.Namespace }}
           clusterName: {{ index .Values "volume-ceph" "cluster_name" }}
           poolName: {{ index .Values "volume-ceph" "pool_name" }}
           readonly: {{ index .Values "volume-ceph" "readOnly" }}
@@ -119,7 +119,7 @@ data:
       {{- if (index .Values "volume-gluster" "enabled") }}
         gluster:
           type: glusterfs
-          hostname: {{ template "volume-gluster_name" . }}
+          hostname: {{ template "volume-gluster_name" . }}.{{ $.Release.Namespace }}
           volume: {{ index .Values "volume-gluster" "volumeName" }}
           transport: tcp
           readonly: {{ index .Values "volume-gluster" "readOnly" }}
@@ -134,7 +134,7 @@ data:
       {{- if (index .Values "volume-swift" "enabled") }}
         swift:
           type: swift
-          authUrl: http://{{ template "volume-swift_name" . }}:5000/v2.0/tokens
+          authUrl: http://{{ template "volume-swift_name" . }}.{{ $.Release.Namespace }}:5000/v2.0/tokens
           tenantName: {{ index .Values "volume-swift" "tenantName" }}
           containerName: {{ index .Values "volume-swift" "containerName" }}
           username: {{ index .Values "volume-swift" "username" }}
