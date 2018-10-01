@@ -82,7 +82,7 @@ spec:
          - "-c"
          - >
            echo "-k" > ~/.curlrc ;
-           ONEZONE_API_KEY="$(curl -k -u $ONEPANEL_BASIC_AUTH -X POST -d "" -H "content-type: application/json" $ONEZONE_HOST/api/v3/onezone/user/client_tokens | jq -r ".token" | tr -d '\"{}' | cut -d ':' -f 2)" ;
+           ONEZONE_API_KEY="$(curl -k -u $ONEPANEL_BASIC_AUTH -X POST -d "" -H "content-type: application/json" $ONEZONE_HOST/api/v3/onezone/user/client_tokens | jq -r ".token" | tr -d '\"{}' | cut -d ':' -f 2)" ; 
            echo "export ONEZONE_API_KEY=$ONEZONE_API_KEY" >> ~/.zshrc ;
            echo "export ONEPROVIDER_API_KEY=$ONEZONE_API_KEY" >> ~/.zshrc ;
            echo "export CDMI_API_KEY=$ONEZONE_API_KEY" >> ~/.zshrc ;

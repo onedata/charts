@@ -6,13 +6,13 @@ image: ceph/daemon:v3.1.0rc1-stable-3.1-mimic-centos-7
 imagePullPolicy: IfNotPresent
 serviceType: ClusterIP
 
-cluster_name: ceph # hardcoded  somewhere in the container
+cluster_name: ceph # hardcoded somewhere in the container
 username: client.k8s
 key: AQC1oSZZZfucFxAA34MekwoWBm7qpGd0A8u+fg==
 pool_name: test
 
-# The gneralization of nodeSelector.
-# Allows for moe fine grained controll over which
+# The generalization of nodeSelector.
+# Allows for more fine grained controls over which
 # nodes are selected by a kubernetes scheduler
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}

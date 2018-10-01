@@ -116,9 +116,9 @@ spec:
               echo "Config before" ;
               kubectl get cm {{ template "fullname" . }}-config -o yaml ;
               kubectl get cm {{ template "fullname" . }}-config -o yaml | sed "s/KEYCLOAK_APP_SECRET_SUPPLIED_AT_RUNTIME/$keycloak_client_secret/" | kubectl apply -f - ;
-              echo "Waiting for changes to get propegated" ;
+              echo "Waiting for changes to get propagated" ;
               while cat /mnt/auth.config | grep -q KEYCLOAK_APP_SECRET_SUPPLIED_AT_RUNTIME ; do sleep 2 ; done ;
-              echo "Changes has been propegated. Mounted config after:" ;
+              echo "Changes has been propagated. Mounted config after:" ;
               cat /mnt/auth.config ;
               exit 0 ;
       {{- end }}

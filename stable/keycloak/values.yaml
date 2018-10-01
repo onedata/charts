@@ -66,8 +66,8 @@ groups:
         users: [ *user_test ]
         enabled: true
 
-# Ovverride the default values of a parent keycloak
-# chart to make. So it playes nicely with Onedata charts.
+# Override the default values of a parent keycloak
+# chart to make. So it plays nicely with Onedata charts.
 keycloak:
   keycloak:
     image:

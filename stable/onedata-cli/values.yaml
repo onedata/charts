@@ -9,8 +9,8 @@ wait_for:
   image: onedata/k8s-wait-for:v1.1
   imagePullPolicy: IfNotPresent
 
-# The gneralization of nodeSelector.
-# Allows for moe fine grained controll over which
+# The generalization of nodeSelector.
+# Allows for more fine grained control over which
 # nodes are selected by a kubernetes scheduler
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}

@@ -94,19 +94,19 @@ cluster_config:
 deployFromSources:
   enabled: false
 
-# Erlang configuration file, which values will overide
+# Erlang configuration file, which values will override
 # respected default values in the app.conf of Onepanel
-# The idea is to overite as needed small parts when needed
+# The idea is to override as little as possible and allow
 # the app.conf evolve on it's own.
 panelOverlayConfig: |-
   [].
 
-# Same stroy as above, just for worker service.
+# Same story as above, just for worker service.
 workerOverlayConfig: |-
   [].
 
-# The gneralization of nodeSelector.
-# Allows for moe fine grained controll over which
+# The generalization of nodeSelector.
+# Allows for more fine grained controls over which
 # nodes are selected by a kubernetes scheduler
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
@@ -128,7 +128,7 @@ generate-certificates:
   enabled: false
   image: onedata/certificate-init-container:8434eb0
   imagePullPolicy: IfNotPresent
-  
+
 # Create a PVC and persist /volumes/persistence
 # Atm. PVC expects to find a matching PV, which is assumed is 
 # to be local persistent volume. Those should be created and managed using this:
@@ -279,5 +279,5 @@ volume-swift:
 
 # This section will be added the end of 'storages' section in oneprovider
 # cluster configuration
-# avoid sotrage names: posix, nfs, ceph, s3, gluster, swift
+# avoid storage names: posix, nfs, ceph, s3, gluster, swift
 external-storages: {}

@@ -18,7 +18,7 @@ We truncate to 20 characters because this is used to set the node identifier in 
 {{- end -}}
 
 {{/*
-Probably the most complex piecie of template I've written.
+Probably the most complex piece of template I've written.
 This template traverses recursively a tree of groups, invoking on each node,
 a bash function 'createGroup'. It generates a bash code that unfolds the recursion of this template,
 saving groupIds in bash variables which names are randomly generated.

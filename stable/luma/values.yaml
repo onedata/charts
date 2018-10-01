@@ -14,8 +14,8 @@ wait_for:
 # blank by default
 config: ""
 
-# The gneralization of nodeSelector.
-# Allows for moe fine grained controll over which
+# The generalization of nodeSelector.
+# Allows for more fine grained controls over which
 # nodes are selected by a kubernetes scheduler
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}

@@ -48,7 +48,7 @@ onepanel_generated_cert_domain: "xx"
 onepanel_trust_test_ca: false
 
 # Number of nodes (pod replicas) for of this onezone
-# their indexes will be asigned FROM 0 (ZERO!)
+# their indexes will be assigned FROM 0 (ZERO!)
 # up to, but not including the count value
 onezone_nodes_count: 1
 
@@ -66,19 +66,19 @@ cluster_config:
 deployFromSources:
   enabled: false
 
-# Erlang configuration file, which values will overide
+# Erlang configuration file, which values will override
 # respected default values in the app.conf of Onepanel
-# The idea is to overite as needed small parts when needed
+# The idea is to override as little as possible and allow
 # the app.conf evolve on it's own.
 panelOverlayConfig: |-
   [].
 
-# Same stroy as above, just for worker service.
+# Same story as above, just for worker service.
 workerOverlayConfig: |-
   [].
 
-# The gneralization of nodeSelector.
-# Allows for moe fine grained controll over which
+# The generalization of nodeSelector.
+# Allows for more fine grained controls over which
 # nodes are selected by a kubernetes scheduler
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}

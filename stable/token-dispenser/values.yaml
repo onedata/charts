@@ -8,8 +8,8 @@ serviceType: ClusterIP
 
 # A simple config that:
 # for onepanel you just provide type
-# for keycloak you provider type, name and profix
-# they top keys in the config are not taked into account
+# for keycloak you provider type, name and prefix
+# the top keys in the config are not taken into account
 # only type is important
 config:
   onepanel: 
@@ -19,8 +19,8 @@ config:
     tokenPrefix: onedata
     type: keycloak
 
-# The gneralization of nodeSelector.
-# Allows for moe fine grained controll over which
+# The generalization of nodeSelector.
+# Allows for more fine grained controls over which
 # nodes are selected by a kubernetes scheduler
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
