@@ -46,9 +46,6 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
 {{ include "imagePullSecrets" . | indent 6 }}
-      volumes:
-      - name: shared
-        emptyDir: {}
       initContainers:
         - name: wait-for-onezone
           image: {{ .Values.wait_for.image }}
@@ -115,9 +112,6 @@ spec:
              - /all_oneclients_mounted
         securityContext:
           privileged: true
-        volumeMounts:
-        - mountPath: /shared
-          name: shared
         volumeMounts:
           - mountPath: /oneclient-mount.sh
             subPath: oneclient-mount.sh
