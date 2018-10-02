@@ -130,9 +130,6 @@ spec:
       - name: oneclient-mount
         configMap:
           name: {{ template "fullname" . }}-config
-          items:
-          - key: oneclient-mount.sh
-            path: oneclient-mount.sh
     {{- if .Values.directIO.nfs.enabled }}
       - name: nfs
         persistentVolumeClaim:
