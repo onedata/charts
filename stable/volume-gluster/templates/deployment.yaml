@@ -86,17 +86,6 @@ spec:
             containerPort: 49158
           - name: gluster-brick7
             containerPort: 49159
-        readinessProbe:
-          timeoutSeconds: 3
-          initialDelaySeconds: 40
-          exec:
-            command:
-              - "/bin/bash"
-              - "-c"
-              - systemctl status glusterd.service
-          periodSeconds: 25
-          successThreshold: 1
-          failureThreshold: 15
         lifecycle:
           postStart:
             exec:
@@ -114,6 +103,7 @@ spec:
                   mkdir /mnt/{{ .Values.volumeName }} ;
                   gluster volume create {{ .Values.volumeName }} $(hostname -i):/mnt/{{ .Values.volumeName }} force ;
                   gluster volume start {{ .Values.volumeName }} ;
+                  echo 1 > /volumes_created ;
         livenessProbe:
           timeoutSeconds: 3
           initialDelaySeconds: 40
@@ -126,16 +116,10 @@ spec:
           successThreshold: 1
           failureThreshold: 15
         readinessProbe:
-          timeoutSeconds: 3
-          initialDelaySeconds: 40
           exec:
             command:
-              - "/bin/bash"
-              - "-c"
-              - systemctl status glusterd.service
-          periodSeconds: 25
-          successThreshold: 1
-          failureThreshold: 15
+              - cat
+              - /volumes_created
       volumes:
         - name: glusterfs-cgroup
           hostPath:
