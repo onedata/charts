@@ -170,8 +170,6 @@ spec:
             export ONEPANEL_OVERRIDE=$(cat /tmp/sources_ready.txt) ;
           {{- end }}
             /root/onezone.sh ;
-            cat /var/log/oz_panel/info.log ;
-            exit 1 ;
         lifecycle:
           preStop:
             exec:
@@ -183,8 +181,6 @@ spec:
                   oz_worker stop ;
                   cluster_manager stop ;
                   /etc/init.d/couchbase-server stop ;
-                  echo 1 > /monitor/onezone-exit ;
-                  pkill -f onezone.py ;
         readinessProbe:
           initialDelaySeconds: 0
           periodSeconds: 1

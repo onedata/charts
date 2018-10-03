@@ -167,8 +167,6 @@ spec:
             export ONEPANEL_OVERRIDE=$(cat /tmp/sources_ready.txt) ;
           {{- end }}
             /root/oneprovider.sh ;
-            cat /var/log/op_panel/info.log ;
-            exit 1 ;
         lifecycle:
           preStop:
             exec:
@@ -180,7 +178,6 @@ spec:
                   op_worker stop ;
                   cluster_manager stop ;
                   /etc/init.d/couchbase-server stop ;
-                  pkill -f oneprovider.py ;
         readinessProbe:
           exec:
             command:
