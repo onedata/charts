@@ -280,6 +280,18 @@ spec:
             {{- end }}
             {{- end }}
             sleep 3600000 ;
+        lifecycle:
+          preStop:
+            exec:
+              command:
+                - "sh"
+                - "-c"
+                - >
+                  {{- if $volume.readOnly }}
+                  mount -o remount,rw /{{ $volume.name }} ;
+                  {{- end }}
+                  umount /{{ $volume.name }};
+                  umount /{{ $volume.name }};
         volumeMounts:
           - mountPath: /{{ $volume.name }}:shared
             name: {{ $volume.name }}
