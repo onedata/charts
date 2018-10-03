@@ -33,6 +33,7 @@ spec:
       hostname: {{ .Chart.Name }}
       subdomain: {{ template "fullname" . }}
       hostNetwork: {{ template "hostNetwork" . }}
+      terminationGracePeriodSeconds: 3
     {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
@@ -81,6 +82,7 @@ spec:
          - "sh"
          - "-c"
          - >
+           trap : TERM INT ;
            echo "source /oneclient-mount.sh" >> ~/.bashrc ;
            {{- range $user := .Values.users }}{{ if hasKey . "oneclient"  }}{{ if has $.Values.suffix $user.oneclient }}{{ if .idps }}
            {{- if .idps.onepanel }}{{if .idps.onepanel.enabled }}
@@ -104,7 +106,7 @@ spec:
            {{- end }}{{ end }}{{ end }}{{ end }}
            echo "All clients have been mounted." ;
            touch /all_oneclients_mounted ;
-           sleep infinity ;
+           sleep infinity & wait ;
         readinessProbe:
           exec:
             command:

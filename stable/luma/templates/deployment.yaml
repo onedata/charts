@@ -32,6 +32,7 @@ spec:
       hostname: {{ .Chart.Name }}
       subdomain: {{ template "fullname" . }}
       hostNetwork: {{ template "hostNetwork" . }}
+      terminationGracePeriodSeconds: 3
     {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
@@ -54,13 +55,9 @@ spec:
         readinessProbe:
           tcpSocket:
             port: 8080
-          initialDelaySeconds: 1
-          periodSeconds: 2
         livenessProbe:
           tcpSocket:
             port: 8080
-          initialDelaySeconds: 15
-          periodSeconds: 20
       {{- if .Values.config }}
         volumeMounts:
         - mountPath: /luma/db.json

@@ -32,6 +32,7 @@ spec:
       hostname: {{ .Chart.Name }}
       subdomain: {{ template "fullname" . }}
       hostNetwork: {{ template "hostNetwork" . }}
+      terminationGracePeriodSeconds: 0
     {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
@@ -54,13 +55,9 @@ spec:
         readinessProbe:
           tcpSocket:
             port: 80
-          initialDelaySeconds: 1
-          periodSeconds: 2
         livenessProbe:
           tcpSocket:
             port: 80
-          initialDelaySeconds: 15
-          periodSeconds: 20
         volumeMounts:
           - mountPath: /db.yaml
             subPath: db.yaml
