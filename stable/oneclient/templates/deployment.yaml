@@ -100,7 +100,7 @@ spec:
            i=1;
            max_i=30;
            while ! mount | grep -q "$mount_dir" && [ $i -le $max_i ] ; do echo "Waiting ${i}/${max_i} time for mount $mount_dir. Sleeping for 2 seconds." ; i=$((i+1)) ; sleep 2 ; done ;
-           if mount | grep -q /mnt/oneclient/meg ; then break ; else echo "Failed to mount $mount_dir retrying to run oneclient for dir=$mount_dir" ; fi  ;
+           if mount | grep -q "$mount_dir" ; then break ; else echo "Failed to mount $mount_dir retrying to run oneclient for dir=$mount_dir" ; fi  ;
            done ;
            echo "Success, mounted $mount_dir." ;
            {{- end }}{{ end }}{{ end }}{{ end }}
