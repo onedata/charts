@@ -9,6 +9,9 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ .Chart.Name }}
     type: nfs
+    {{- if .Values.suffix }} 
+    owner: {{ .Values.suffix }}
+    {{- end }}
   annotations:
     version: "{{ .Chart.Version }}"
     volume.beta.kubernetes.io/mount-options: {{ .Values.mount_options | quote }}

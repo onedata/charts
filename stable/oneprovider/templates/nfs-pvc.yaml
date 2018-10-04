@@ -18,4 +18,8 @@ spec:
   resources:
     requests:
       storage: {{ index .Values "volume-nfs" "storage_claim" }}
+  selector: 
+    matchLabels:
+      type: nfs
+      owner: {{ .Values.suffix }}
 {{- end }}
