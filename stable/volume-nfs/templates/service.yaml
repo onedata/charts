@@ -9,6 +9,10 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ .Chart.Name }}
   annotations:
+  {{- if .Values.deployAsPreInstallHook }}
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-delete-policy": before-hook-creation
+  {{- end }}
     version: "{{ .Chart.Version }}"
 spec:
   type: {{ .Values.serviceType }}

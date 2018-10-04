@@ -13,8 +13,11 @@ metadata:
     owner: {{ .Values.suffix }}
     {{- end }}
   annotations:
+  {{- if .Values.deployAsPreInstallHook }}
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-delete-policy": before-hook-creation
+  {{- end }}
     version: "{{ .Chart.Version }}"
-    volume.beta.kubernetes.io/mount-options: {{ .Values.mount_options | quote }}
 spec:
   capacity:
     storage: {{ .Values.storage | quote }}

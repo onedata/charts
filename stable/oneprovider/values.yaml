@@ -259,6 +259,9 @@ volume-nfs:
     - intr
     - timeo=5
     - retrans=2
+  deployAsPreInstallHook: true
+  cleanUpJob:
+    enabled: true
   luma-enabled: *luma_enabled_nfs
   readOnly: false
 

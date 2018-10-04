@@ -6,9 +6,25 @@ image: gcr.io/google-samples/nfs-server:1.1
 imagePullPolicy: IfNotPresent
 serviceType: ClusterIP
 
-mount_options: ""
+mount_options: []
+
 storage: 1000T
 persistentVolumeReclaimPolicy: Retain
+
+# The whole chart will be deployed as helm pre-install hook
+# it will not be managed by helm and not be deleted 
+# upon release deletion. Thanks to it, other pods using nfs server
+# will have time to umount their shares in a clean fashion
+deployAsPreInstallHook: false
+
+# When deployAsPreInstallHook is set to true you you want a way
+# to delete this chart's objects. This will create a post-delete
+# helm hook job that will do that.
+# objects 
+cleanUpJob:
+  enabled: false
+  image: onedata/k8s-wait-for:v1.1
+  imagePullPolicy: IfNotPresent
 
 persistence:
   enabled: false

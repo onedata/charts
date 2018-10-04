@@ -1,0 +1,41 @@
+{{- if .Values.cleanUpJob.enabled }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "fullname" . }}-cleanup
+  labels:
+    app: {{ template "fullname" . }}
+    chart: {{ .Chart.Name }}
+    release: {{ template "releaseName" . }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Chart.Name }}-cleanup
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
+    version: "{{ .Chart.Version }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        chart: {{ .Chart.Name }}
+        release: {{ template "releaseName" . }}
+        heritage: {{ .Release.Service }}
+        component: {{ .Chart.Name }}-cleanup
+      annotations:
+        version: "{{ .Chart.Version }}"
+    spec:
+      restartPolicy: Never
+      hostNetwork: {{ template "hostNetwork" . }}
+{{ include "imagePullSecrets" . | indent 6 }}
+      containers:
+      - name: clean-up-nfs
+        image: {{ .Values.cleanUpJob.image }}
+        imagePullPolicy: {{ template "imagePullPolicy" dict "root" . "context" .Values.cleanUpJob }}
+        command:
+          - "sh"
+          - "-c"
+          - >
+            kubectl delete deployment,service,pv -l app={{ template "fullname" . }} ;
+{{- end }}
