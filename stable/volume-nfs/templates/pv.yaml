@@ -22,6 +22,10 @@ spec:
     - ReadWriteMany
   # The NFS server pod is deleted anyway so no need to recycle
   persistentVolumeReclaimPolicy: {{ .Values.persistentVolumeReclaimPolicy }}
+  {{- if .Values.mount_options }}
+  mountOptions:
+{{ toYaml .Values.mount_options | indent 4 }}
+  {{- end }}
   nfs:
     # TODO: The NFS server name is resolved using nodes resolve.conf
     # here we expect that nodes resovle.conf can resolve namespaces service name

@@ -254,7 +254,11 @@ volume-nfs:
   suffix: *providerSuffix
   container_mount_path: &container_mount_path /volumes/nfs
   storage_claim: 1T
-  mount_options: "soft,intr,timeo=10"
+  mount_options:
+    - soft
+    - intr
+    - timeo=5
+    - retrans=2
   luma-enabled: *luma_enabled_nfs
   readOnly: false
 
