@@ -33,7 +33,7 @@ spec:
     spec:
       subdomain: {{ template "fullname" . }}
       hostNetwork: {{ template "hostNetwork" . }}
-      terminationGracePeriodSeconds: 5
+      terminationGracePeriodSeconds: 3
       {{- if or .Values.affinity .Values.onedata_anti_affinity_enabled }}
       affinity:
       {{- if .Values.onedata_anti_affinity_enabled }}
