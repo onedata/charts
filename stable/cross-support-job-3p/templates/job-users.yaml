@@ -83,7 +83,16 @@ spec:
           - >
             set -e;
             echo "-k" > ~/.curlrc ; echo "-f" >> ~/.curlrc ;
-          {{- range .Values.users }}{{ if (hasKey . "idps"  )}}{{ if (hasKey .idps "keycloak" )}}{{ if and .idps.keycloak.enabled .idps.keycloak.onezoneLogin }}
+        {{- range .Values.users }}{{ if (hasKey . "idps"  )}}{{ if (hasKey .idps "onepanel" )}}{{ if (hasKey .idps.onepanel "mode" )}}{{ if and .idps.onepanel.enabled (eq .idps.onepanel.mode "rest") }}
+            printf "Creating user {{ .name }} [response: " ;
+            onepanel-rest-cli -w "'%{http_code}'" -k -u {{ template "admin_username_template" $ }}:{{ template "admin_password_template" $ }} addUser username=={{ .name }} password=={{ .password }} userRole=={{ .idps.onepanel.type }} ;
+            echo "] Success." ;
+            {{- /* TODO: Fix this onepanel user propagation hack */ -}}
+            echo "Propagating onepanel user={{ .name }} to onezone" ;
+            {{- /* TODO: Because of an error in swagger in coresponding invocation in onezone-rest-cli, I use curl here */ -}}
+            curl -k -vvv -u {{ .name }}:{{ .password }} -X GET ${ONEZONE_HOST}/api/v3/onezone/user ;
+        {{- end }}{{- end }}{{- end }}{{- end }}{{- end }}
+        {{- range .Values.users }}{{ if (hasKey . "idps"  )}}{{ if (hasKey .idps "keycloak" )}}{{ if and .idps.keycloak.enabled .idps.keycloak.onezoneLogin }}
             idp=keycloak-{{ template "keycloak_idpName_template" $ }};
             echo "Loging keycloak user={{ .name }} with password={{ .password }} to Onezone. User info from Onezone is: " ;
             TOKEN="$(curl -k --silent -u {{ .name }}:{{ .password }} http://{{ template "token-dispenser_name" $ }}/api/v1.0/token/$idp)" ;

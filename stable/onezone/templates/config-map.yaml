@@ -75,11 +75,11 @@ data:
           userRole: admin
         {{- end }}
         {{- range .Values.onepanel_users }}
-        {{- if and (hasKey .idps "onepanel") }} {{- if .idps.onepanel.enabled }}
+        {{- if (hasKey .idps "onepanel") }}{{- if (hasKey .idps.onepanel "mode" ) }}{{- if and .idps.onepanel.enabled (eq .idps.onepanel.mode "config") }}
         {{ .name }}:
           password: {{ .password }}
           userRole: {{ if .idps.onepanel.type -}}{{- .idps.onepanel.type -}}{{- else -}}regular{{- end -}}
-        {{- end }}{{- end }}
+        {{- end }}{{- end }}{{- end }}
         {{- end }}
     {{- end }}
 
