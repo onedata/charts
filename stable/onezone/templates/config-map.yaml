@@ -79,56 +79,125 @@ data:
     {{- end }}
 
   auth.config: |-
-    [
-        % Currently Basic Auth (login/password) has no configuration options.
-        % Just leave the tuple below to enable or remove it to disable Basic Auth.
-        {basicAuth, []}
-        
-        % Currently other authentication options are disabled by default, because
-        % they require cumbersome configuration per each OpenID provider.
+    #{
+        version => 2,
+        % Allows to log in to Onezone using the account from Onepanel (user & password).
+        onepanelAuthConfig => #{
+            enabled => true
+        },
+        samlConfig => #{
+            enabled => false
+        },
+        openidConfig => #{
+            % Enable OpenID login protocol - if disabled, all OpenID IdPs will be
+            % hidden from the login page.
+            enabled => true,
+            % Default config for every OpenID IdP, can be overridden in IdP config
+            defaultProtocolConfig => #{
+                % Internal plugin that will be used for handling the login process -
+                % if the IdP uses standard OpenID Connect protocol,
+                % default_oidc_plugin is the way to go. If not, IdP specific plugin
+                % can be implemented and specified here.
+                plugin => default_oidc_plugin,
+                pluginConfig => #{
+                    endpoints => #{
+                        authorize => {xrds, "authorization_endpoint"},
+                        accessToken => {xrds, "token_endpoint"},
+                        userInfo => {xrds, "userinfo_endpoint"}
+                    },
+                    scope => "openid email profile",
+                    accessTokenAcquireMethod => post,
+                    clientSecretPassMethod => urlencoded,
+                    accessTokenPassMethod => inAuthHeader,
+                    customData => #{}
+                },
+                % Defines how the attributes from OpenID user info should be mapped
+                % to Onedata user attributes. Attributes must correspond to existing OpenID
+                % attributes.
+                attributeMapping => #{
+                    subjectId => {required, "sub"},
+                    name => {optional, {any, ["name", "login"]}},
+                    alias => {optional, "username"},
+                    emails => {optional, "email"},
+                    entitlements => {optional, {any, [
+                        {append, ["groups", "roles"]},
+                        "groups"
+                    ]}},
+                    custom => udefined
+                },
+                % Rules for mapping entitlements in IdP into entitlements in Onedata.
+                entitlementMapping => #{
+                    enabled => true,
+                    parser => nested_entitlement_parser,
+                    parserConfig => #{
+                        splitWith => "/",
+                        topGroupType => unit,
+                        topGroupPrivilegesInVo => member,
+                        subGroupsType => team,
+                        subGroupsPrivilegesInParent => member,
+                        userPrivileges => member
+                    }
+                },
+                % Enables/disables authorization using access tokens from the IdP
+                % Supported only in OpenID protocol
+                authorityDelegation => #{
+                    enabled => true
+                }
+            }
+        },
+        supportedIdps => [
+            % 'onepanel' is a special id for onepanel login. The key name 'onepanel'
+            % cannot be changed or used for any other IdP for the Onezone GUI to
+            % work correctly.
+            {onepanel, #{
+                % Configuration of the login page button
+                displayName => "Onepanel account",
+                % Some predefined icons are available built-in into the GUI app.
+                % Their paths start with /assets/images/auth-providers.
+                iconPath => "/assets/images/auth-providers/onepanel.svg",
+                % Background color is useful for icons with transparency. Moreover,
+                % after selecting an IdP, its icon disappears and a spinner is shown -
+                % hence background color should be kept the same as icon's background
+                % color (if any).
+                iconBackgroundColor => "#4BD187",
+                % Which protocol is used for this IdP - onepanelAuth is the only
+                % valid one for onepanel IdP.
+                protocol => onepanelAuth
         {{- if (index .Values "keycloak" "enabled") }}
-        ,{ {{- .Values.keycloak.idpName }}, [
-            % Standard config
-            {auth_module, auth_keycloak},
-            {app_id, <<"{{ .Values.keycloak.appId }}">>},
-            {app_secret, <<"KEYCLOAK_APP_SECRET_SUPPLIED_AT_RUNTIME">>},
-            % Provider specific config
-            %{xrds_endpoint, <<"https://fed-id.nuv.la/auth/realms/SixSq/.well-known/openid-configuration">>},
-            %{xrds_endpoint, <<"http://keycloak-keycloak-http.luma.svc.dev.onedata.uk.to/auth/realms/KEYCLOAK_APP_RELAMID_SUPPLIED_AT_RUNTIME/.well-known/openid-configuration">>},
-            {xrds_endpoint, <<"http://{{ template "keycloak_service_url" . }}/auth/realms/{{ .Values.keycloak.init.realmId }}/.well-known/openid-configuration">>},
-            % Authority delegation config
-            {authority_delegation, [
-                {enabled, true},
-                {token_prefix, <<"{{ .Values.keycloak.tokenPrefix }}:">>}
-            ]},
-            {group_mapping, [
-                {enabled, true},
-                % All groups from this IdP will belong to the below VO group.
-                {vo_group_id, <<"{{ .Values.keycloak.voGroupId }}">>},
-                % attributes_to_map - which attributes sent by IdP should be mapped
-                % to groups (each attribute value is expected to hold a list of strings).
-                % Config format: list of tuples {A, B, C}:
-                %   A -> attribute key
-                %   B -> derived group type (role | team | unit | organization)
-                %   C -> expected group structure, one of:
-                %     * flat -> all groups will be a direct child of the VO group,
-                %       names of groups will be the same as in the attribute.
-                %     * {nested, SplitWith} -> each group membership will be split
-                %       into a hierarchical structure using the specified split pattern.
-                %       E.g. for string <<"a/b/c">> and SplitWith = <<"/">>, three
-                %       nested groups will be created, with user belonging to the
-                %       last one: VO <- a <- b <- c <- user.
-                {attributes_to_map, [
-                    {<<"groups">>, team, {nested, <<"/">>}},
-                    {<<"roles">>, role, flat},
-                    {<<"entitlement">>, role, flat}
-                ]},
-                % Optional field
-                {super_group, <<"{{ .Values.keycloak.superGroup }}">>}
-            ]}
-        ]}
-        {{- end }}
-    ].
+            }},
+            { {{- .Values.keycloak.idpName }}, #{
+                % Configuration of the login page button
+                displayName => "Onedata KeyCloak",
+                iconPath => "/assets/images/auth-providers/rhea.svg",
+                iconBackgroundColor => "#B51017",
+                % Which protocol is used for this IdP
+                protocol => openid,
+                % Configuration specific for OpenID protocol - overrides the default
+                protocolConfig => #{
+                    plugin => default_oidc_plugin,
+                    pluginConfig => #{
+                        clientId => "onedata",
+                        clientSecret => "c9599ad1-7e79-4a59-a43f-dda70225f206",
+                        endpoints => #{
+                            xrds => "http://{{ template "keycloak_service_url" . }}/auth/realms/onedata/.well-known/openid-configuration"
+                        }
+                    },
+                    entitlementMapping => #{
+                        voGroupName => "{{ .Values.keycloak.voGroupId }}",
+                        adminGroup => "admins"
+                    },
+                    authorityDelegation => #{
+                        % To use an access token from this IdP, you must use a prefix
+                        % to indicate the IdP of origin. With below, you can
+                        % use your token using REST like this:
+                        % curl -H "X-Auth-Token: onedata:lkj9s-df8af-sdf8sdf-my-access-token" ...
+                        tokenPrefix => "{{ .Values.keycloak.tokenPrefix }}:"
+                    }
+                }
+            {{- end }}
+            }}
+        ]
+    }.
     
 {{- if (index .Values "saml-idp" "enabled") }}
   saml.config: |-

@@ -280,10 +280,10 @@ volume-gluster:
 volume-swift:
   enabled: false
   suffix: *providerSuffix
-  tenantName: test
-  username: tester
-  password: testing
-  containerName: test
+  tenantName: service
+  username: swift
+  password: swift
+  containerName: swift
   readOnly: false
   insecure: true
   luma-enabled: *luma_enabled_swift

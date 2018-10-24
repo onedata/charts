@@ -56,6 +56,34 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
+        lifecycle:
+          postStart:
+            exec:
+              command:
+                - "/bin/bash"
+                - "-c"
+                - >
+                  SWIFT_READY="error" ;
+                  while [[ ! -z ${SWIFT_READY} ]]; do
+                    SWIFT_READY=$(swift --auth-version 2 -A http://${IPADDRESS}:5000/v2.0 -K swift -U swift --os-tenant-name service list 2>&1) ;
+                  done ;
+                  sleep 3 ;
+                  SWIFT_READY="error" ;
+                  while [[ ! -z ${SWIFT_READY} ]]; do
+                    SWIFT_READY=$(swift --auth-version 2 -A http://${IPADDRESS}:5000/v2.0 -K swift -U swift --os-tenant-name service list 2>&1) ;
+                  done ;
+                  swift --auth-version 2 -A http://${IPADDRESS}:5000/v2.0 -K swift -U swift --os-tenant-name service post swift ;
+                  echo "Done" > /swift_up ;
+        readinessProbe:
+          exec:
+            command:
+              - cat
+              - /swift_up
+        command:
+          - "/bin/bash"
+          - "-c"
+          - >
+            /sbin/my_init
         ports:
           - name: horizon
             containerPort: 80
@@ -72,24 +100,3 @@ spec:
           - name: keystoneadmin
             containerPort: 35357
             protocol: TCP
-        readinessProbe:
-          timeoutSeconds: 3
-          initialDelaySeconds: 10
-          exec:
-            command:
-              - "/bin/bash"
-              - "-c"
-              - >
-                curl -v -H 'X-Storage-User: {{ .Values.tenantName }}:{{ .Values.username }}' -H 'X-Storage-Pass: {{ .Values.password }}' http://localhost:8080/auth/v1.0 ;
-          periodSeconds: 25
-          successThreshold: 1
-          failureThreshold: 15
-        livenessProbe:
-          timeoutSeconds: 3
-          initialDelaySeconds: 10
-          exec:
-            command:
-              - "/bin/bash"
-              - "-c"
-              - >
-                curl -v -H 'X-Storage-User: {{ .Values.tenantName }}:{{ .Values.username }}' -H 'X-Storage-Pass: {{ .Values.password }}' http://localhost:8080/auth/v1.0 ;

@@ -2,18 +2,27 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-image: onedata/dockswift:v1
+image: onedata/dockswift:v2
 imagePullPolicy: IfNotPresent
 serviceType: ClusterIP
 
-# Those are are the default values that cannot be overridden atm.
+wait_for:
+  image: onedata/k8s-wait-for:v1.1
+  imagePullPolicy: IfNotPresent
+
+wait_for_swift:
+  enabled: true
+
+# Those are the default, values that cannot be overridden atm.
 tenantName: service
 username: swift
 password: swift
+
+# Name of the container to create
 containerName: swift
 
-# The generalization of nodeSelector.
-# Allows for more fine grained controls over which
+# The gneralization of nodeSelector.
+# Allows for moe fine grained controll over which
 # nodes are selected by a kubernetes scheduler
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
