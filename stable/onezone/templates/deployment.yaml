@@ -210,6 +210,10 @@ spec:
               configMapKeyRef:
                 name: {{ template "fullname" . }}-config
                 key: ONEZONE_CONFIG
+          {{- if .Values.global.alpha }}
+          - name: ONEPANEL_EMERGENCY_PASSPHRASE
+            value:  {{ .Values.onepanel_emergency_account.password }}
+          {{- end }}
         volumeMounts:
     {{- if .Values.persistence.enabled }}
           - name: persistence

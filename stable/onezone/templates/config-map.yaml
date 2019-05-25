@@ -71,11 +71,28 @@ data:
         subdomainDelegation: false
       builtInDnsServer: false
     {{- if or .Values.onepanelAdminUsers .Values.onepanel_users }}
+  {{- if .Values.global.alpha }}
+      users:
+        {{- range .Values.onezone_admin_users }}
+        - username: {{ .name }}
+          password: {{ .password }}
+          groups: 
+            - admins
+        {{- end }}
+        {{- range .Values.onepanel_users }}
+        {{- if (hasKey .idps "onepanel") }}{{- if (hasKey .idps.onepanel "mode" ) }}{{- if and .idps.onepanel.enabled (eq .idps.onepanel.mode "config") }}
+        - username: {{ .name }}
+          password: {{ .password }}
+        {{- end }}{{- end }}{{- end }}
+        {{- end }}
+  {{- else }}
     onepanel:
       users:
-        {{ .Values.onezone_main_admin.name }}:
-          password: {{ .Values.onezone_main_admin.password }}
+        {{- range .Values.onezone_admin_users }}
+        {{ .name }}:
+          password: {{ .password }}
           userRole: admin
+        {{- end }}
         {{- range .Values.onepanel_users }}
         {{- if (hasKey .idps "onepanel") }}{{- if (hasKey .idps.onepanel "mode" ) }}{{- if and .idps.onepanel.enabled (eq .idps.onepanel.mode "config") }}
         {{ .name }}:
@@ -84,6 +101,7 @@ data:
         {{- end }}{{- end }}{{- end }}
         {{- end }}
     {{- end }}
+  {{- end }}
 
   auth.config: |-
         %% Default auth.config file, only onepanelAuth login is enabled. Please refer

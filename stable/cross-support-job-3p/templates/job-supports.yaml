@@ -62,7 +62,7 @@ spec:
           - name: ONEZONE_HOST
             value: "https://{{ template "releaseName" . }}-onezone.{{ template "service_namespace_domain" . }}"
           - name: ONEPANEL_BASIC_AUTH
-            value: "{{ template "admin_username_template" . }}:{{ template "admin_password_template" . }}"
+            value: "{{ template "onepanel_emergency_username_template" . }}:{{ template "onepanel_emergency_password_template" . }}"
           - name: ONEZONE_API_KEY
             value: "supplied_at_runtime"
         args:

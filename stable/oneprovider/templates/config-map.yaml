@@ -227,24 +227,17 @@ data:
     # instead of FQDN
     onezone:
       domainName: {{ template "onezone_service_url" . }}
-    {{- if or .Values.onepanel_admin_users .Values.onepanel_users }}
+    {{- if not .Values.global.alpha }}
+    {{- if or .Values.onepanel_emergency_account .Values.onepanel_users }}
     onepanel:
-    {{- if .Values.global.alpha }}
-    onepanel:
-      admin:
-        {{- range .Values.onepanel_admin_users }}
-          username: {{ .login }}
-          password: {{ .password }}
-        {{- end }}
-    {{- else }}
       users:
         {{- range .Values.onepanel_admin_users }}
-        {{ .login }}:
+        {{ .name }}:
           password: {{ .password }}
           userRole: admin
         {{- end }}
         {{- range .Values.onepanel_users }}
-        {{ .login }}:
+        {{ .name }}:
           password: {{ .password }}
           userRole: regular
         {{- end }}

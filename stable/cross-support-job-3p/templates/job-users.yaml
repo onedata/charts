@@ -71,7 +71,7 @@ spec:
           - name: ONEZONE_API_KEY
             value: "supplied_at_runtime"
           - name: ONEPANEL_BASIC_AUTH
-            value: "{{ template "admin_username_template" . }}:{{ template "admin_password_template" . }}"
+            value: "{{ template "onepanel_emergency_username_template" . }}:{{ template "onepanel_emergency_password_template" . }}"
           - name: ONEPROVIDER_HOST
             value: "https://{{ template "oneprovider_name" . }}"
           - name: ONEPANEL_HOST
@@ -90,12 +90,16 @@ spec:
         {{- range .Values.users }}{{ if (hasKey . "idps"  )}}
         {{ if (hasKey .idps "onepanel" )}}{{ if (hasKey .idps.onepanel "mode" )}}{{ if and .idps.onepanel.enabled (eq .idps.onepanel.mode "rest") }}
             printf "Creating user {{ .name }} [response: " ;
-            onepanel-rest-cli -w "'%{http_code}'" -k -u {{ template "admin_username_template" $ }}:{{ template "admin_password_template" $ }} addUser username=={{ .name }} password=={{ .password }} userRole=={{ .idps.onepanel.type }} ;
+        {{- if .Values.global.alpha }}
+            curl --silent -k -u ${ONEPANEL_BASIC_AUTH} -X POST -H "Content-type: application/json" -d '{"username": "{{ .name }}", "password": "{{ .password }}"}' ${ONEZONE_HOST}/api/v3/onezone/users ;
+        {{- else -}}
+            onepanel-rest-cli -w "'%{http_code}'" -k addUser username=={{ .name }} password=={{ .password }} userRole=={{ .idps.onepanel.type }} ;
             echo "] Success." ;
             {{- /* TODO: Fix this onepanel user propagation hack */ -}}
             echo "Propagating onepanel user={{ .name }} to onezone" ;
             {{- /* TODO: Because of an error in swagger in coresponding invocation in onezone-rest-cli, I use curl here */ -}}
             onezone-rest-cli -u {{ .name }}:{{ .password }} getCurrentUser ;
+        {{- end }}
         {{- end }}{{- end }}{{- end }}
         {{- if (hasKey .idps "keycloak" )}}{{ if (hasKey .idps.keycloak "mode" )}}{{ if and .idps.keycloak.enabled (eq .idps.keycloak.mode "duringCrossSupportJob") }}
             if [[ ${KEYCLOAK_VARS_INITIALIZED} == "False" ]] ; then

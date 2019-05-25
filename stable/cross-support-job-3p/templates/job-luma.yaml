@@ -73,7 +73,7 @@ spec:
           - name: ONEZONE_API_KEY
             value: "supplied_at_runtime"
           - name: ONEPANEL_BASIC_AUTH
-            value: "{{ template "admin_username_template" $ }}:{{ template "admin_password_template" $ }}"
+            value: "{{ template "onepanel_emergency_username_template" . }}:{{ template "onepanel_emergency_password_template" . }}"
           - name: ONEPROVIDER_HOST
             value: "https://{{ template "oneprovider_name" . }}"
           - name: ONEPANEL_HOST
@@ -123,7 +123,7 @@ spec:
             echo "" ;
             {{- range .storages }}
             printf "Adding maping for storage {{ .name }} with" ;
-            storageDetails=$(onepanel-rest-cli -u {{ template "admin_username_template" $ }}:{{ template "admin_password_template" $ }} getStorages | jq -r '.ids[]' | while read a_storage_id ; do onepanel-rest-cli -u {{ template "admin_username_template" $ }}:{{ template "admin_password_template" $ }} getStorageDetails id=$a_storage_id ; done | jq -r 'select(.name=="{{ .name }}")') ;
+            storageDetails=$(onepanel-rest-cli getStorages | jq -r '.ids[]' | while read a_storage_id ; do onepanel-rest-cli getStorageDetails id=$a_storage_id ; done | jq -r 'select(.name=="{{ .name }}")') ;
             storageId=$(echo "$storageDetails" | jq -r '.id') ;
             storageType=$(echo "$storageDetails" | jq -r '.type') ;
             case $storageType in
@@ -238,7 +238,7 @@ spec:
             {{- range $storage := .storages -}}
             printf "Adding group mapping {{ $group.name }} for storage {{ $storage.name }} in provider {{ $provider.name }}. [response: " ;
             group_id=$(onezone-rest-cli -u {{ template "admin_username_template" $ }}:{{ template "admin_password_template" $ }} listUserGroups | jq -r '.groups[]' | while read -r a_group_id ; do onezone-rest-cli -u {{ template "admin_username_template" $ }}:{{ template "admin_password_template" $ }} getGroup id=$a_group_id ; done | jq -r 'select(.name=="{{ $group.name }}").groupId') ;
-            storageDetails=$(onepanel-rest-cli -u {{ template "admin_username_template" $ }}:{{ template "admin_password_template" $ }} getStorages | jq -r '.ids[]' | while read a_storage_id ; do onepanel-rest-cli -u {{ template "admin_username_template" $ }}:{{ template "admin_password_template" $ }} getStorageDetails id=$a_storage_id ; done | jq -r 'select(.name=="{{ $storage.name }}")') ;
+            storageDetails=$(onepanel-rest-cli getStorages | jq -r '.ids[]' | while read a_storage_id ; do onepanel-rest-cli getStorageDetails id=$a_storage_id ; done | jq -r 'select(.name=="{{ $storage.name }}")') ;
             storageId=$(echo "$storageDetails" | jq -r '.id') ;
             luma_group_mapping_json=$(cat <<EEOF
 
@@ -270,7 +270,7 @@ spec:
             echo "LUMA_HOST=$LUMA_HOST" ;
             printf "Setting default space {{ $space.name }} gid for storage storage {{ $provider.storage_name }} in provider $providerName. [response: " ;
             space_id=$(onezone-rest-cli -u {{ template "admin_username_template" $ }}:{{ template "admin_password_template" $ }} getSpace | jq -r '.spaces[]' | while read -r a_space_id ; do onezone-rest-cli -u {{ template "admin_username_template" $ }}:{{ template "admin_password_template" $ }} getSpace id=$a_space_id ; done | jq -r 'select(.name=="{{ $space.name }}").spaceId') ;
-            storageDetails=$(onepanel-rest-cli -u {{ template "admin_username_template" $ }}:{{ template "admin_password_template" $ }} getStorages | jq -r '.ids[]' | while read a_storage_id ; do onepanel-rest-cli -u {{ template "admin_username_template" $ }}:{{ template "admin_password_template" $ }} getStorageDetails id=$a_storage_id ; done | jq -r 'select(.name=="{{ $provider.storage_name }}")') ;
+            storageDetails=$(onepanel-rest-cli getStorages | jq -r '.ids[]' | while read a_storage_id ; do onepanel-rest-cli getStorageDetails id=$a_storage_id ; done | jq -r 'select(.name=="{{ $provider.storage_name }}")') ;
             storageId=$(echo "$storageDetails" | jq -r '.id') ;
             luma_soace_group_mapping_json=$(cat <<EEOF  
 

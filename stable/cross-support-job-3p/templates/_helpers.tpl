@@ -33,6 +33,22 @@
 {{- end -}}
 {{- end -}}
 
+{{- define "onepanel_emergency_username_template" -}}
+{{- if hasKey (index .Values "global") "onepanelEmergencyAccount" -}}
+{{- (index .Values "global" "onepanelEmergencyAccount" "name") }}
+{{- else -}}
+{{- printf "%s" "UNINITIALIZED" }}
+{{- end -}}
+{{- end -}}
+
+{{- define "onepanel_emergency_password_template" -}}
+{{- if hasKey (index .Values "global") "onepanelEmergencyAccount" -}}
+{{- (index .Values "global" "onepanelEmergencyAccount" "password") }}
+{{- else -}}
+{{- printf "%s" "UNINITIALIZED" }}
+{{- end -}}
+{{- end -}}
+
 {{- define "keycloak_realmId_template" -}}
 {{- if hasKey (index .Values "global") "keycloakInstance" -}}
 {{- (index .Values "global" "keycloakInstance" "realmId") }}

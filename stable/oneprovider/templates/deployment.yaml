@@ -163,10 +163,10 @@ spec:
             - "/bin/sh"
             - "-c"
             - >
-              userId=$(onezone-rest-cli -k -u {{ index (first .Values.onepanel_admin_users) "login" }}:{{ index (first .Values.onepanel_admin_users) "password" }} -v getCurrentUser | jq -r ".userId") ;
-              echo "userId=$userId for user={{ index (first .Values.onepanel_admin_users) "login" }} with password={{ index (first .Values.onepanel_admin_users) "password" }}" ;
-              providerRegistrationToken=$(curl -k -vv -sS --tlsv1.2 -u {{ index (first .Values.onepanel_admin_users) "login" }}:{{ index (first .Values.onepanel_admin_users) "password" }} -X POST  -H 'content-type: application/json' "https://{{ template "onezone_name" . }}/api/v3/onezone/user/clusters/provider_registration_token" | jq -r ".token") ;
-              echo "Provider registration token=$providerRegistrationToken for user user={{ index (first .Values.onepanel_admin_users) "login" }}" ;
+              userId=$(onezone-rest-cli -k -u {{ index (first .Values.onepanel_admin_users) "name" }}:{{ index (first .Values.onepanel_admin_users) "password" }} -v getCurrentUser | jq -r ".userId") ;
+              echo "userId=$userId for user={{ index (first .Values.onepanel_admin_users) "name" }} with password={{ index (first .Values.onepanel_admin_users) "password" }}" ;
+              providerRegistrationToken=$(curl -k -vv -sS --tlsv1.2 -u {{ index (first .Values.onepanel_admin_users) "name" }}:{{ index (first .Values.onepanel_admin_users) "password" }} -X POST  -H 'content-type: application/json' "https://{{ template "onezone_name" . }}/api/v3/onezone/user/clusters/provider_registration_token" | jq -r ".token") ;
+              echo "Provider registration token=$providerRegistrationToken for user user={{ index (first .Values.onepanel_admin_users) "name" }}" ;
               echo "$providerRegistrationToken" >> /onezone-registration-token/token ;
           volumeMounts:
             - mountPath: /onezone-registration-token
@@ -257,6 +257,10 @@ spec:
               configMapKeyRef:
                 name: {{ template "fullname" . }}-config
                 key: ONEPROVIDER_CONFIG
+          {{- if .Values.global.alpha }}
+          - name: ONEPANEL_EMERGENCY_PASSPHRASE
+            value:  {{ .Values.onepanel_emergency_account.password }}
+          {{- end }}
         volumeMounts:
     {{- if .Values.persistence.enabled }}
           - name: persistence

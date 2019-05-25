@@ -117,11 +117,21 @@ persistence:
 # or oneproviders that are part of this deployment
 onedata_anti_affinity_enabled: false
 
-# Those credentials will be used by all REST operations etc.
-onezone_main_admin: 
-  name: admin
+# Those credentials will be used by all onepanel REST operations etc.
+onepanel_emergency_account: &onepanel_emergency_account
+  name: onepanel
   password: password
 
+# Main onezone admin user
+main_onezone_admin: &main_onezone_admin
+  name: admin
+  password: password
+  
+# List of onezone admin users
+onezone_admin_users: 
+  - *main_onezone_admin
+  - *onepanel_emergency_account
+  
 # List of onezone onepanel regular users with example bellow
 onepanel_users: []
   # - name: user

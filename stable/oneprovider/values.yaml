@@ -157,14 +157,20 @@ persistence:
 # or onezones that are part of this deployment
 onedata_anti_affinity_enabled: false
 
+# Those credentials will be used by all onepanel REST operations etc.
+onepanel_emergency_account: &onepanel_emergency_account
+  name: onepanel
+  password: password
+
 # List of oneprovider onepanel users with administrative privileges
 onepanel_admin_users:
-  - login: admin
+  - name: admin
     password: password
+  - *onepanel_emergency_account
 
 # List of oneprovider onepanel regular users
 onepanel_users:
-  - login: user
+  - name: user
     password: password
 
 # Create oneclient instance that will connect to this oneprovider

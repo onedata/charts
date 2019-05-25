@@ -64,7 +64,7 @@ spec:
           - name: ONEZONE_API_KEY
             value: "supplied_at_runtime"
           - name: ONEPANEL_BASIC_AUTH
-            value: "{{ template "admin_username_template" . }}:{{ template "admin_password_template" . }}"
+            value: "{{ template "onepanel_emergency_username_template" . }}:{{ template "onepanel_emergency_password_template" . }}"
           - name: ONEPROVIDER_HOST
             value: "https://{{ template "oneprovider_name" . }}"
           - name: ONEPANEL_HOST

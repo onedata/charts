@@ -8,7 +8,9 @@ dependencies:
   repository: https://onedata.github.io/charts/
   condition: onedata-3p.enabled  
   import-values:
-    - child: onezone.onezone_main_admin
+    - child: onezone.onepanel_emergency_account
+      parent: global.onepanelEmergencyAccount
+    - child: onezone.main_onezone_admin
       parent: global.onezoneMainAdmin
     - child: onezone.keycloak
       parent: global.keycloakInstance

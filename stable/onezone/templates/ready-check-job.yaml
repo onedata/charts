@@ -57,9 +57,12 @@ spec:
             set -e ;
             echo "-k" > ~/.curlrc ; echo "-f" >> ~/.curlrc ;
             echo "ONEZONE_HOST=$ONEZONE_HOST" ;
+        {{- if not .Values.global.alpha }}
           {{- /* TODO: Fix this onepanel user propagation hack */ -}}
-            echo "Propagating onepanel admin user={{ .Values.onezone_main_admin.name }} to onezone" ;
-            onezone-rest-cli -u {{ .Values.onezone_main_admin.name }}:{{ .Values.onezone_main_admin.password }} -sS --tlsv1.2 -v -w '%{http_code}' getCurrentUser ;
+          {{- range $user := .Values.onepanel_admin_users }}
+            echo "Propagating onepanel admin user={{ $user.name }} to onezone" ;
+            onezone-rest-cli -u {{ $user.name }}:{{ $user.password }} -sS --tlsv1.2 -v -w '%{http_code}' getCurrentUser ;
+          {{- end }}
           {{- range $user := .Values.onepanel_users }}
           {{- $idp := (first (pluck "onepanel" $user.idps )) }}{{- if $idp }}{{- if and $idp.enabled (eq $idp.mode "config") }}
             echo "Propagating onepanel user={{ $user.name }} to onezone" ;
@@ -67,4 +70,5 @@ spec:
           {{- end }}
           {{- end }}
           {{- end }}
+        {{- end }}
 {{- end }}
