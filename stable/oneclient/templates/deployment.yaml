@@ -174,14 +174,6 @@ spec:
       - name: jupyter
         image: {{ .Values.jupyter.image }}
         imagePullPolicy: {{ template "imagePullPolicy" dict "root" . "context" .Values.jupyter }}
-        lifecycle:
-          preStop:
-            exec:
-              command:
-                - "sh"
-                - "-c"
-                - >
-                  umount /mnt/oneclient ;
         volumeMounts:
         - mountPath: /mnt/oneclient:shared
           name: oneclient
