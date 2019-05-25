@@ -228,7 +228,11 @@ spec:
             subPath:  worker-overlay.config
       {{- if (index .Values "keycloak" "enabled") }}
           - name: config-map
+          {{- if .Values.global.alpha }}
+            mountPath: /var/www/html/oz_worker/custom/keycloak.svg
+          {{- else }}
             mountPath: /var/www/html/custom/oz_worker/keycloak.svg
+          {{- end }}
             subPath:  keycloak.svg
       {{- end }}
       {{- if (index .Values "generate-certificates" "enabled") }}
