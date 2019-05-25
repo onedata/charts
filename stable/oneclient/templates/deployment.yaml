@@ -153,10 +153,10 @@ spec:
                 - "-c"
                 - >
                   {{- range $user := .Values.users }}{{ if hasKey . "oneclient"  }}{{ if has $.Values.suffix $user.oneclient }}{{ if .idps }}
-                  oneclient --unmount "/mnt/oneclient/{{ $user.name }}" ;
+                  fusermount -uz "/mnt/oneclient/{{ $user.name }}" ; 
                   {{- end }}{{- end }}{{- end }}{{- end }}
                   {{- if .Values.directIO.nfs.enabled }}
-                  umount {{ .Values.directIO.nfs.mount_path }} ;
+                  umount -f {{ .Values.directIO.nfs.mount_path }} ;
                   {{- end }}
         volumeMounts:
           - mountPath: /oneclient-mount.sh
