@@ -186,6 +186,12 @@ oneclient:
     type: auto-generate
     disableSuffix: true
 
+# Create jupyter notebook with oneclient-fs that will connect to this oneprovider
+jupyter-notebook:
+  enabled: false
+  onezone_service_url: *onezone_service_url
+  suffix: *providerSuffix
+
 # Create onedata-cli instance that will have a context of this oneprovider
 # and this provider onezone
 onedata-cli:

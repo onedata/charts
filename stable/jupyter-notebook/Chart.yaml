@@ -1,0 +1,12 @@
+name: jupyter-notebook
+version: 0.2.0
+description: jupyter-notebook
+keywords:
+  - onedata
+  - jupyter-notebook
+home: https://github.com/onedata/
+maintainers:
+  - name: Michal Orzechowski
+    email: orzechowski.michal@gmail.com
+engine: gotpl
+appVersion: 18.02.0-rc7

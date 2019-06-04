@@ -19,11 +19,14 @@ onedata-cli: build-onedata-cli
 onezone: onedata-chart-utils keycloak elasticsearch
 onezone: build-onezone
 
-oneprovider: onedata-chart-utils volumes luma
+oneprovider: onedata-chart-utils jupyter-notebook volumes luma
 oneprovider: build-oneprovider
 
 oneclient: onedata-chart-utils
 oneclient: build-oneclient
+
+jupyter-notebook: onedata-chart-utils
+jupyter-notebook: build-jupyter-notebook
 
 test: test-onedata-chart-utils test-volume-s3 test-volume-ceph test-volume-nfs test-oneclient test-oneprovider test-onezone test-onedata-cli test-onedata test-onedata-3p test-cross-support-job-3p
 

@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}-config
+  labels:
+    app: {{ template "fullname" . }}
+    chart: {{ .Chart.Name }}
+    release: {{ template "releaseName" . }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Chart.Name }}
+  annotations:
+    version: "{{ .Chart.Version }}"
+data:
+  jupyter_notebook_config.py: |-
+    import sys, os
+    sys.path.append('/opt/oneclient/lib')
+    c = get_config()
+    c.NotebookApp.contents_manager_class = 'onedatafs_jupyter.onedata_contents_manager.OnedataFSContentsManager'
+    c.OnedataFSContentsManager.oneprovider_host = u'{}'.format(os.environ['ONECLIENT_PROVIDER_HOST'])
+    c.OnedataFSContentsManager.access_token = u'{}'.format(os.environ['ONECLIENT_ACCESS_TOKEN'])
+    c.OnedataFSContentsManager.space = u'/{}'.format(os.environ['SPACE_NAME'])
+    c.OnedataFSContentsManager.path = u'/{}'.format(os.environ['SPACE_NAME'])
+    c.OnedataFSContentsManager.insecure = ('true'==os.environ['ONECLIENT_INSECURE'])
+    c.OnedataFSContentsManager.no_buffer = True
+    c.OnedataFSContentsManager.force_proxy_io = True
+  thumbnail-demo: |-
+{{ (.Files.Get .Values.demoFiles.thumbnailDemo) | indent 4 }}

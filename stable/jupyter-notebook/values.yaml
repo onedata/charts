@@ -1,0 +1,62 @@
+# Default values for jupyter-notebook.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image: onedata/jupyter-minimal-notebook
+imagePullPolicy: IfNotPresent
+
+wait_for:
+  image: onedata/k8s-wait-for:v1.2
+  imagePullPolicy: IfNotPresent
+
+# Wait for onezone service to start
+wait_for_onezone:
+  enabled: true
+
+# Wait for token dispenser service to start
+wait_for_token_dispenser:
+  enabled: true
+
+# Wait for oneprovider service to start
+wait_for_oneprovider:
+  enabled: true
+
+# The generalization of nodeSelector.
+# Allows for more fine grained control over which
+# nodes are selected by a kubernetes scheduler
+# https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+# List of taints which are tolerated by the pods 
+# when nodes are selected by a kubernetes scheduler
+# https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: {}
+
+# Specify a map of key-value pairs. For the pod 
+# to be eligible to run on a node, the node 
+# must have each of the indicated key-value pairs as labels
+# https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
+# If token dispenser is used it's url should not have
+# the oneprovider suffix prepended
+token_dispenser_service_url:
+  type: auto-generate
+  disableSuffix: true
+
+# The jupyter content api connects uses this user to connect to authenticate with Onedata
+# and to use expose a particular space
+user:
+    name: joe
+    idps:
+      onepanel:
+        enabled: true
+    password: password
+
+# Space that will be the root of notebook file tree and where demo files will upload
+space:
+  name: krk-p
+
+# Demo files embedded with the chart and upload to the space
+demoFiles:
+  thumbnailDemo: thumbnail-demo.ipynb

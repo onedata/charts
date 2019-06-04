@@ -52,3 +52,8 @@ dependencies:
   version: 0.2.6
   repository: https://onedata.github.io/charts/
   condition: luma.enabled
+  
+- name: jupyter-notebook
+  version: 0.2.0
+  repository: file://../jupyter-notebook
+  condition: jupyter-notebook.enabled

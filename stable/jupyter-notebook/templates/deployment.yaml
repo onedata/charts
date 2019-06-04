@@ -1,0 +1,135 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}"
+    release: "{{ template "releaseName" . }}"
+    heritage: "{{ .Release.Service }}"
+    component: {{ .Chart.Name }}
+  annotations:
+    version: "{{ .Chart.Version }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+      chart: {{ .Chart.Name }}
+      release: {{ template "releaseName" . }}
+      heritage: {{ .Release.Service }}
+      component: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        chart: "{{ .Chart.Name }}"
+        release: "{{ template "releaseName" . }}"
+        heritage: "{{ .Release.Service }}"
+        component: {{ .Chart.Name }}
+      annotations:
+        version: "{{ .Chart.Version }}"
+    spec:
+      hostname: {{ .Chart.Name }}
+      subdomain: {{ template "fullname" . }}
+      hostNetwork: {{ template "hostNetwork" . }}
+      terminationGracePeriodSeconds: 3
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+{{ include "imagePullSecrets" . | indent 6 }}
+      {{- if or (index .Values "wait_for_onezone" "enabled") (or (index .Values "wait_for_token_dispenser" "enabled") (index .Values "wait_for_oneprovider" "enabled")) }}
+      initContainers:
+      {{- end }}
+      {{- if (index .Values "wait_for_onezone" "enabled") }}
+        - name: wait-for-onezone
+          image: {{ .Values.wait_for.image }}
+          imagePullPolicy: {{ template "imagePullPolicy" dict "root" . "context" .Values.wait_for }}
+          args:
+            - "job"
+            - "{{ template "onezone_name" . }}-ready-check"
+      {{- end }}
+      {{- if (index .Values "wait_for_token_dispenser" "enabled") }}
+        - name: wait-for-token-dispenser
+          image: {{ .Values.wait_for.image }}
+          imagePullPolicy: {{ template "imagePullPolicy" dict "root" . "context" .Values.wait_for }}
+          args:
+            - "pod"
+            - >
+              -lapp={{ template "token-dispenser_name" . }}
+      {{- end }}
+      {{- if (index .Values "wait_for_oneprovider" "enabled") }}
+        - name: wait-for-oneprovider
+          image: {{ .Values.wait_for.image }}
+          imagePullPolicy: {{ template "imagePullPolicy" dict "root" . "context" .Values.wait_for }}
+          args:
+            - "job"
+            - "{{ template "oneprovider_name" . }}-ready-check"
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ template "imagePullPolicy" dict "root" . }}
+        env:
+          - name: ONECLIENT_INSECURE
+            value: "true"
+          - name: ONECLIENT_ACCESS_TOKEN
+            value: "supplied_at_runtime"
+          - name: ONECLIENT_PROVIDER_HOST
+            value: "{{ template "oneprovider_name" . }}"
+          - name: SPACE_NAME
+            value: "{{ .Values.space.name }}"
+        command:
+         - "sh"
+         - "-c"
+         - >
+           apt update; apt install -y curl;
+           echo "-k" > ~/.curlrc ;
+           ONECLIENT_PROVIDER_ID="$(curl -k https://$ONECLIENT_PROVIDER_HOST/configuration 2>/dev/null | tr ',' '\n' | grep 'providerId' | tr -d '"' | cut -d ':' -f 2)";
+           echo "[main process] Connecting users to Oneprovider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID";
+           {{- if (hasKey .Values.user.idps "onepanel") }}{{ if (.Values.user.idps.onepanel.enabled) }}
+           idp=onepanel;
+           {{- end }}{{- end }}
+           {{- if (hasKey .Values.user.idps "keycloak") }}{{ if (.Values.idps.keycloak.enabled) }}
+           idp=keycloak-rhea;
+           {{- end }}{{- end }}
+           ONECLIENT_ACCESS_TOKEN=$(curl --silent -u {{ .Values.user.name }}:{{ .Values.user.password }} http://{{ template "token-dispenser_name" $ }}/api/v1.0/token/$idp);
+           echo "ONECLIENT_ACCESS_TOKEN=$ONECLIENT_ACCESS_TOKEN" ;
+           all_{{ .Values.user.name }}_providers=$(curl  -k -sS --tlsv1.2 -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" -X GET "https://{{ template "onezone_name" $ }}/api/v3/onezone/user/effective_providers") ;
+           echo "[{{ .Values.user.name }}] List of oneproviders that support user={{ .Values.user.name }}: $all_{{ .Values.user.name }}_providers" ;
+           if ! echo "$all_{{ .Values.user.name }}_providers" | grep -q $ONECLIENT_PROVIDER_ID ; then
+             echo "[{{ .Values.user.name }}] User user={{ .Values.user.name }} has no space supported by provider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID.";
+             while ! echo "$all_{{ .Values.user.name }}_providers" | grep -q $ONECLIENT_PROVIDER_ID ; do
+               echo "[{{ .Values.user.name }}] Waiting for id=$ONECLIENT_PROVIDER_ID to appear on the list of effective providers=$all_{{ .Values.user.name }}_providers for the user={{ .Values.user.name }}" ;
+               sleep 2 ;
+               all_{{ .Values.user.name }}_providers=$(curl  -k -sS --tlsv1.2 -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" -X GET "https://{{ template "onezone_name" $ }}/api/v3/onezone/user/effective_providers") ;
+             done ;
+           fi ;
+           echo "[{{ .Values.user.name }}] Provider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID is on the list of effective providers=$all_{{ .Values.user.name }}_providers of user={{ .Values.user.name }}" ;
+           echo "Uploading notebook file={{ .Values.demoFiles.thumbnailDemo }} to the space SPACE_NAME=$SPACE_NAME" ;
+           cat "/{{ .Values.demoFiles.thumbnailDemo }}" | curl -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" -v  -X PUT -d @- "https://$ONECLIENT_PROVIDER_HOST/cdmi/$SPACE_NAME/{{ .Values.demoFiles.thumbnailDemo }}" ;
+           jupyter notebook --NotebookApp.token='' --port=8888 --no-browser --allow-root --ip=0.0.0.0 ;
+        ports:
+          - containerPort: 8888
+        readinessProbe:
+          tcpSocket:
+            port: 8888
+        volumeMounts:
+          - mountPath: /{{ .Values.demoFiles.thumbnailDemo }}
+            subPath: thumbnail-demo
+            name: jupyter-config
+          - mountPath: /root/.jupyter/jupyter_notebook_config.py
+            subPath: jupyter_notebook_config.py
+            name: jupyter-config
+      volumes:
+      - name: jupyter-config
+        configMap:
+          name: {{ template "fullname" . }}-config
