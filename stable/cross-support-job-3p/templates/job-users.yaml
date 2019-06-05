@@ -90,12 +90,8 @@ spec:
         {{- range .Values.users }}{{ if (hasKey . "idps"  )}}
         {{ if (hasKey .idps "onepanel" )}}{{ if (hasKey .idps.onepanel "mode" )}}{{ if and .idps.onepanel.enabled (eq .idps.onepanel.mode "rest") }}
             printf "Creating user {{ .name }} [response: " ;
-            onepanel-rest-cli -w "'%{http_code}'" -k addUser username=={{ .name }} password=={{ .password }} userRole=={{ .idps.onepanel.type }} ;
+            curl --silent -k -u ${ONEPANEL_BASIC_AUTH} -X POST -H "Content-type: application/json" -d '{"username": "{{ .name }}", "password": "{{ .password }}"}' ${ONEZONE_HOST}/api/v3/onezone/users ;
             echo "] Success." ;
-            {{- /* TODO: Fix this onepanel user propagation hack */ -}}
-            echo "Propagating onepanel user={{ .name }} to onezone" ;
-            {{- /* TODO: Because of an error in swagger in coresponding invocation in onezone-rest-cli, I use curl here */ -}}
-            onezone-rest-cli -u {{ .name }}:{{ .password }} getCurrentUser ;
         {{- end }}{{- end }}{{- end }}
         {{- if (hasKey .idps "keycloak" )}}{{ if (hasKey .idps.keycloak "mode" )}}{{ if and .idps.keycloak.enabled (eq .idps.keycloak.mode "duringCrossSupportJob") }}
             if [[ ${KEYCLOAK_VARS_INITIALIZED} == "False" ]] ; then
