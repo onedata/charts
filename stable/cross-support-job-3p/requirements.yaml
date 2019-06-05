@@ -1,11 +1,11 @@
 dependencies:
 - name: onedata-chart-utils
-  version: 0.2.11
-  repository: https://onedata.github.io/charts/
+  version: 0.2.13
+  repository: file://../onedata-chart-utils
 
 - name: onedata-3p
-  version: 0.2.13
-  repository: https://onedata.github.io/charts/
+  version: 0.2.14
+  repository: file://../onedata-3p
   condition: onedata-3p.enabled  
   import-values:
     - child: onezone.onepanel_emergency_account

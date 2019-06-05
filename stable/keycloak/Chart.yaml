@@ -1,5 +1,5 @@
 name: keycloak
-version: 0.1.3
+version: 0.1.4
 description: Extension of the incubator/keycloak chart
 home: https://github.com/onedata/keycloak
 sources:

@@ -1,46 +1,46 @@
 dependencies:
 - name: oneclient
   version: 0.2.13
-  repository: https://onedata.github.io/charts/
+  repository: file://../oneclient
   condition: oneclient.enabled
 
 - name: onedata-cli
-  version: 0.2.13
-  repository: https://onedata.github.io/charts/
+  version: 0.2.14
+  repository: file://../onedata-cli
   condition: onedata-cli.enabled
 
 - name: onedata-chart-utils
-  version: 0.2.11
-  repository: https://onedata.github.io/charts/
+  version: 0.2.13
+  repository: file://../onedata-chart-utils
 
 - name: volume-s3
   version: 0.2.9
-  repository: https://onedata.github.io/charts/
+  repository: file://../volume-s3
   condition: volume-s3.enabled
 
 - name: volume-ceph
   version: 0.2.10
-  repository: https://onedata.github.io/charts/
+  repository: file://../volume-ceph
   condition: volume-ceph.enabled
 
 - name: volume-nfs
-  version: 0.2.11
-  repository: https://onedata.github.io/charts/
+  version: 0.2.12
+  repository: file://../volume-nfs
   condition: volume-nfs.enabled
 
 - name: volume-gluster
   version: 0.2.7
-  repository: https://onedata.github.io/charts/
+  repository: file://../volume-gluster
   condition: volume-gluster.enabled
 
 - name: volume-swift
-  version: 0.2.6
-  repository: https://onedata.github.io/charts/
+  version: 0.2.7
+  repository: file://../volume-swift
   condition: volume-swift.enabled
   
 - name: volume-webdav
-  version: 0.2.0
-  repository: https://onedata.github.io/charts/
+  version: 0.2.1
+  repository: file://../volume-webdav
   condition: volume-webdav.enabled
   
 - name: volume-dcache
@@ -49,8 +49,8 @@ dependencies:
   condition: volume-dcache.enabled
 
 - name: luma
-  version: 0.2.6
-  repository: https://onedata.github.io/charts/
+  version: 0.2.7
+  repository: file://../luma
   condition: luma.enabled
   
 - name: jupyter-notebook

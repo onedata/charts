@@ -1,5 +1,5 @@
 name: oneprovider
-version: 0.2.16
+version: 0.2.17
 description: The main data management component of Onedata, deployed at each storage provider site, responsible for unifying and controlling access to data over low level storage resources of the provider.
 keywords:
   - onedata

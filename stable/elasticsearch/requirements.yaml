@@ -4,5 +4,5 @@ dependencies:
   repository: "@stable"
 
 - name: onedata-chart-utils
-  version: 0.2.12
+  version: 0.2.13
   repository: file://../onedata-chart-utils

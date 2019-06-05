@@ -1,6 +1,6 @@
 dependencies:
 - name: onedata-chart-utils
   repository: file://../onedata-chart-utils
-  version: 0.2.12
-digest: sha256:c0e48a4cdf0d8af81a5a4f64acbec9d58a352c99aa103b7d9223f3695559c032
-generated: 2019-02-09T22:00:43.002203+01:00
+  version: 0.2.13
+digest: sha256:f3e57fe90e06155aa28140afb015fc8786c0b043ad141f3bcd7228c1b0236d9d
+generated: 2019-06-03T21:27:58.069761+02:00

@@ -1,5 +1,5 @@
 name: cross-support-job-3p
-version: 0.2.14
+version: 0.2.15-rc27
 description: Chart that populates deployment environment created with onedata/onedata-3p chart with spaces
 keywords:
   - onedata

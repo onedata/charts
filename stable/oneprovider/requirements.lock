@@ -1,33 +1,39 @@
 dependencies:
 - name: oneclient
-  repository: https://onedata.github.io/charts/
+  repository: file://../oneclient
   version: 0.2.13
 - name: onedata-cli
-  repository: https://onedata.github.io/charts/
-  version: 0.2.13
+  repository: file://../onedata-cli
+  version: 0.2.14
 - name: onedata-chart-utils
-  repository: https://onedata.github.io/charts/
-  version: 0.2.11
+  repository: file://../onedata-chart-utils
+  version: 0.2.13
 - name: volume-s3
-  repository: https://onedata.github.io/charts/
+  repository: file://../volume-s3
   version: 0.2.9
 - name: volume-ceph
-  repository: https://onedata.github.io/charts/
+  repository: file://../volume-ceph
   version: 0.2.10
 - name: volume-nfs
-  repository: https://onedata.github.io/charts/
-  version: 0.2.11
+  repository: file://../volume-nfs
+  version: 0.2.12
 - name: volume-gluster
-  repository: https://onedata.github.io/charts/
+  repository: file://../volume-gluster
   version: 0.2.7
 - name: volume-swift
-  repository: https://onedata.github.io/charts/
-  version: 0.2.6
+  repository: file://../volume-swift
+  version: 0.2.7
 - name: volume-webdav
-  repository: https://onedata.github.io/charts/
-  version: 0.2.0
+  repository: file://../volume-webdav
+  version: 0.2.1
+- name: volume-dcache
+  repository: file://../volume-dcache
+  version: 0.2.1
 - name: luma
-  repository: https://onedata.github.io/charts/
-  version: 0.2.6
-digest: sha256:75bfeb18cfba37435f38c11e4d679d8cce58f14f010bbd7a2b4a118eb4b075af
-generated: 2019-01-16T12:27:54.8277+01:00
+  repository: file://../luma
+  version: 0.2.7
+- name: jupyter-notebook
+  repository: file://../jupyter-notebook
+  version: 0.2.0
+digest: sha256:c5030405c224e7b363d5346aae524755cd6adf9ea56b4752b62d6811db6170d6
+generated: 2019-06-04T16:36:14.554815+02:00

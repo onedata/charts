@@ -1,5 +1,5 @@
 name: luma
-version: 0.2.6
+version: 0.2.7
 description: LUMA is a REST server that exposes simple REST API that can be used to map users (of any system/kind) to storage specific users, in the process authorizing them with the storage.
 keywords:
   - storage
