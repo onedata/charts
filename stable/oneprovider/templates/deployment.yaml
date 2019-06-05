@@ -211,6 +211,8 @@ spec:
             export ONEPANEL_OVERRIDE=$(cat /tmp/sources_ready.txt) ;
           {{- end }}
             /root/oneprovider.sh ;
+        securityContext:
+          privileged: true
         lifecycle:
           preStop:
             exec:
