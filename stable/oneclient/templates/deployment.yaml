@@ -109,12 +109,12 @@ spec:
            mkdir -p "$mount_dir" ;
            mount_{{ $user.name }}() {
              touch /oneclient_mounting_{{ $user.name }} ;
-             echo "[{{ $user.name }}] List of oneproviders that support user={{ $user.name }}:" ;
              all_{{ $user.name }}_providers=$(curl  -k -sS --tlsv1.2 -H "X-Auth-Token: $1" -X GET "https://{{ template "onezone_name" $ }}/api/v3/onezone/user/effective_providers") ;
+             echo "[{{ $user.name }}] List of oneproviders that support user={{ $user.name }}: $all_{{ $user.name }}_providers" ;
              if ! echo "$all_{{ $user.name }}_providers" | grep -q $ONECLIENT_PROVIDER_ID ; then
                echo "[{{ $user.name }}] User user={{ $user.name }} has no space supported by provider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID.";
                while ! echo "$all_{{ $user.name }}_providers" | grep -q $ONECLIENT_PROVIDER_ID ; do
-                 echo "[{{ $user.name }}] Waiting for id=$ONECLIENT_PROVIDER_ID to apear on the list of effective providers=$all_{{ $user.name }}_providers for the user={{ $user.name }}" ;
+                 echo "[{{ $user.name }}] Waiting for id=$ONECLIENT_PROVIDER_ID to appear on the list of effective providers=$all_{{ $user.name }}_providers for the user={{ $user.name }}" ;
                  sleep 2 ;
                  all_{{ $user.name }}_providers=$(curl  -k -sS --tlsv1.2 -H "X-Auth-Token: $1" -X GET "https://{{ template "onezone_name" $ }}/api/v3/onezone/user/effective_providers") ;
                done ;
