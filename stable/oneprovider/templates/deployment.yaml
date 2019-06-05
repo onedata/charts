@@ -28,6 +28,9 @@ spec:
         release: {{ template "releaseName" . }}
         heritage: {{ .Release.Service }}
         component: "oneprovider"
+        {{- if (index .Values "deployFromSources" "enabled") }}
+        sources: "{{ .Values.deployFromSources.timestamp }}"
+        {{- end }}
       annotations:
         version: "{{ .Chart.Version }}"
     spec:
