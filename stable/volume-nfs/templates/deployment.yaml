@@ -90,9 +90,9 @@ spec:
             value: /exports/{{ (first ( slice (index $.Values "exports" ) $i (add $i 1) ) ).name }}
         {{- end }}
       {{- end -}}
-          {{- range $key, $value := $.Values.env }}
-          - name: {{ $key }}
-            value: {{ $value | quote }}
+          {{- range .Values.envs }}
+          - name: {{ .name | quote }}
+            value: {{ .value | quote }}
           {{- end }}
         lifecycle:
           preStop:

@@ -99,7 +99,7 @@ guiDebugMode: false
 
 # Extra environmental variables that will be injected
 # into oneprovider container.
-env: []
+envs: []
 
 # Number of nodes (pod replicas) for of this provider
 # their indexes will be assigned FROM 0 (ZERO!)
