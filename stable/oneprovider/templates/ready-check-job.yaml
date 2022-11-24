@@ -35,7 +35,7 @@ spec:
           - "/bin/sh"
           - "-c"
           - >
-            user="" ;
+            deployed="" ;
             while [ "$deployed" != "true" ] ; do deployed="$(curl -k  -sS  -X GET 'https://{{ template "oneprovider_name" . }}:9443/configuration' | jq .'deployed')" ; echo "Waiting for https://{{ template "oneprovider_name" . }}:9443/configuration to return something..." ; echo "returned=$deployed" ; sleep 2 ; done ;
       containers:
       - name: oneprovider-ready-check
