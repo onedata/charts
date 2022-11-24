@@ -185,7 +185,8 @@ spec:
         {{- end }}
       {{- end }}
     {{- if (index .Values "jupyter" "enabled") }}
-          - mountPath: /mnt/oneclient:shared
+          - mountPath: /mnt/oneclient
+            mountPropagation: Bidirectional
             name: oneclient
     {{- end }}
     {{- if (index .Values "external-volume-mounts") }}
@@ -196,7 +197,8 @@ spec:
         image: {{ .Values.jupyter.image }}
         imagePullPolicy: {{ template "imagePullPolicy" dict "root" . "context" .Values.jupyter }}
         volumeMounts:
-        - mountPath: /mnt/oneclient:shared
+        - mountPath: /mnt/oneclient
+          mountPropagation: Bidirectional
           name: oneclient
     {{- end }}
       volumes:

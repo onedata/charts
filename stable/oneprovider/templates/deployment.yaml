@@ -416,8 +416,9 @@ spec:
       {{- end }}
       {{- if and (index .Values "volume-data-sync" "enabled") (eq (int .Values.oneprovider_nodes_count) 1) }}
         {{- range $volume := (index .Values "volume-data-sync" "volumes") }}
-          - mountPath: /volumes/{{ $volume.name }}:shared
+          - mountPath: /volumes/{{ $volume.name }}
             name: {{ $volume.name }}
+            mountPropagation: Bidirectional
         {{- end }}
       {{- end }}
       {{- if (index .Values "posix" "persistence" "enabled") }}
@@ -461,7 +462,8 @@ spec:
                   {{- end }}
                   umount -fl /{{ $volume.name }};
         volumeMounts:
-          - mountPath: /{{ $volume.name }}:shared
+          - mountPath: /{{ $volume.name }}
+            mountPropagation: Bidirectional
             name: {{ $volume.name }}
         securityContext:
           privileged: true
