@@ -196,6 +196,8 @@ spec:
       - name: jupyter
         image: {{ .Values.jupyter.image }}
         imagePullPolicy: {{ template "imagePullPolicy" dict "root" . "context" .Values.jupyter }}
+        securityContext:
+          privileged: true
         volumeMounts:
         - mountPath: /mnt/oneclient
           mountPropagation: Bidirectional
