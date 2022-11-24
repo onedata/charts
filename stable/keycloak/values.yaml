@@ -6,7 +6,7 @@
 #     init: *init
 
 wait_for:
-  image: groundnuty/k8s-wait-for:v1.5.1
+  image: groundnuty/k8s-wait-for:v2.0
   imagePullPolicy: IfNotPresent
 
 # Specifies if init job should wait for keycloak service to start

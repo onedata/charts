@@ -11,7 +11,7 @@ onedata_cli:
   imagePullPolicy: IfNotPresent
 
 wait_for:
-  image: groundnuty/k8s-wait-for:v1.5.1
+  image: groundnuty/k8s-wait-for:v2.0
   imagePullPolicy: IfNotPresent
 
 # Specifies if ready check job should be created.
@@ -162,7 +162,7 @@ persistence:
     - ReadWriteOnce
   cleanUpJob:
     enabled: true
-    image: groundnuty/k8s-wait-for:v1.5.1
+    image: groundnuty/k8s-wait-for:v2.0
     imagePullPolicy: IfNotPresent
 
 # If set true, onezone will not be deployed on the same node as other onezones

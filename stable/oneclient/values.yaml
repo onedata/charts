@@ -6,7 +6,7 @@ image: onedata/oneclient:20.02.12
 imagePullPolicy: IfNotPresent
 
 wait_for:
-  image: groundnuty/k8s-wait-for:v1.5.1
+  image: groundnuty/k8s-wait-for:v2.0
   imagePullPolicy: IfNotPresent
 
 # Wait for onezone service to start

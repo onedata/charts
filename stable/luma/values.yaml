@@ -7,7 +7,7 @@ imagePullPolicy: IfNotPresent
 serviceType: ClusterIP
 
 wait_for:
-  image: groundnuty/k8s-wait-for:v1.5.1
+  image: groundnuty/k8s-wait-for:v2.0
   imagePullPolicy: IfNotPresent
 
 # The initial content of lumas config
