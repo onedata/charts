@@ -22,6 +22,8 @@ onezone: build-onezone
 oneprovider: onedata-chart-utils jupyter-notebook volumes luma
 oneprovider: build-oneprovider
 
+cluster-worker: build-cluster-worker
+
 oneclient: onedata-chart-utils
 oneclient: build-oneclient
 

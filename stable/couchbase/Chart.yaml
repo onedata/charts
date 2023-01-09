@@ -1,0 +1,12 @@
+apiVersion: v1
+name: couchbase
+version: 0.1.0
+description: Stand-alone deployment of couchbase. Meant only for running E2E tests on Kubernetes.
+keywords:
+  - 'onedata'
+home: https://www.onedata.org
+sources:
+  - https://github.com/onedata/onedata
+maintainers:
+  - name: Michal Orzechowski
+    email: orzechowski.michal@gmail.com

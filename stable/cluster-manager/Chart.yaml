@@ -1,0 +1,12 @@
+apiVersion: v1
+name: cluster-manager
+version: 0.2.18-rc21
+description: Stand-alone deployment of cluster-manager.
+keywords:
+  - 'onedata'
+home: https://www.onedata.org
+sources:
+  - https://github.com/onedata/onedata
+maintainers:
+  - name: Michal Orzechowski
+    email: orzechowski.michal@gmail.com

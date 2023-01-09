@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: {{ .Chart.Name }}
+    release: {{ template "releaseName" . }}
+    heritage: {{ .Release.Service }}
+    component: "couchbase"
+  annotations:
+    version: "{{ .Chart.Version }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+      chart: {{ .Chart.Name }}
+      release: {{ template "releaseName" . }}
+      heritage: {{ .Release.Service }}
+      component: "couchbase"
+  serviceName: {{ template "fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        chart: {{ .Chart.Name }}
+        release: {{ template "releaseName" . }}
+        heritage: {{ .Release.Service }}
+        component: "couchbase"
+      annotations:
+        version: "{{ .Chart.Version }}"
+    spec:
+      subdomain: {{ template "fullname" . }}
+      hostNetwork: {{ template "hostNetwork" . }}
+      terminationGracePeriodSeconds: 3
+      {{- if or .Values.affinity .Values.onedata_anti_affinity_enabled }}
+      affinity:
+      {{- if .Values.onedata_anti_affinity_enabled }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: component
+                operator: In
+                values:
+                - oneprovider
+                - onezone
+              - key: release
+                operator: In
+                values:
+                - {{ template "releaseName" . }}
+            topologyKey: kubernetes.io/hostname
+      {{- end }}
+      {{- if .Values.affinity }}
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+{{ include "imagePullSecrets" . | indent 6 }}
+      containers:
+      - name: couchbase
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ template "imagePullPolicy" dict "root" . }}
+        {{- if or .Values.cpu .Values.memory }}
+        resources:
+          requests:
+          {{- if .Values.cpu }}
+            cpu: {{ .Values.cpu }}
+          {{- end }}
+          {{- if .Values.memory }}
+            memory: {{ .Values.memory }}
+          {{- end }}
+        {{- end }}
+        ports:
+          - containerPort: 8091
+          - containerPort: 8092
+          - containerPort: 8093
+          - containerPort: 8094
+        command:
+          - "/bin/bash"
+          - "-c"
+          - >
+            /entrypoint.sh couchbase-server &
+
+            until $(curl --output /dev/null --silent --head --fail http://localhost:8091/ui/index.html);
+            do
+                echo 'Waiting for Couchbase to start...'
+                sleep 1
+            done;
+
+            couchbase-cli cluster-init -c "127.0.0.1:8091" --cluster-init-username=admin --cluster-init-password=password --cluster-init-ramsize=500;
+            couchbase-cli bucket-create -c "127.0.0.1:8091" -u admin -p password --bucket=onedata --bucket-ramsize=256 --bucket-eviction-policy=fullEviction --wait;
+            couchbase-cli rebalance -c "127.0.0.1:8091" -u admin -p password;
+            echo "Initialised cluster"
+
+            sleep infinity
+        stdin: true
+        tty: true
+        securityContext:
+          privileged: true
