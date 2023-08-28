@@ -331,7 +331,7 @@ posix:
     enabled: false
     accessModes:
       - ReadWriteOnce
-    size: 1GB
+    size: 1Gi
 
 # Create S3 storage server and connect with oneprovider
 volume-s3:
