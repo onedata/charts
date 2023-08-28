@@ -358,6 +358,8 @@ volume-nfs:
     luma-enabled: *luma_enabled_nfs
     readOnly: false
     storageClaim: 1T
+    accessModes:
+      - ReadWriteMany
   mount_options:
     - soft
     - intr

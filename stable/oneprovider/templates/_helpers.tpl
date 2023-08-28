@@ -28,7 +28,9 @@ metadata:
     version: "{{ .root.Chart.Version }}"
 spec:
   accessModes:
-    - ReadWriteMany
+  {{- range .accessModes }}
+    - {{ . | quote }}
+  {{- end }}
   resources:
     requests:
       storage: {{ .storageClaim }}
