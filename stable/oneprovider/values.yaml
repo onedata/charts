@@ -166,8 +166,11 @@ privileged: false
 # You need to add cluster root certificate to your system for this to work
 generate-certificates:
   enabled: false
-  image: onedata/certificate-init-container:8434eb0
+  image: onedata/certificate-init-container:ga17ad4f
   imagePullPolicy: IfNotPresent
+  signerName: clusterissuers.cert-manager.io/onedata-ci-cluster-tls
+  signerNamespace: cert-manager
+  signerSecret: onedata-ci-cluster-tls
 
 # Mount certificates from a secret created before deployment
 # Secret should be named in a same way, as the automatically created secret

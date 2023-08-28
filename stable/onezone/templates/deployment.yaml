@@ -96,7 +96,19 @@ spec:
             - >
               if [[ $POD_NAME != {{ template "fullname" . }}-0 ]] ; then echo "Not generating certificates" ; exit 0 ; fi ;
               mkdir $(CERT_DIR) ;
-              /certificate-init-container -secret-name={{ template "fullname" . }}-secret-tls -labels=app={{ template "fullname" . }},chart={{ .Chart.Name }},release={{ template "releaseName" . }},heritage={{ .Release.Service }} -additional-dnsnames={{ template "fullname" . }},{{ template "fullname" . }}.$(NAMESPACE),{{ template "fullname" . }}.$(NAMESPACE).svc -cert-dir=$(CERT_DIR) -namespace=$(NAMESPACE) -pod-ip=$(POD_IP) -pod-name=$(POD_NAME) -service-names={{ template "fullname" . }} -cluster-domain={{ template "cluster_domain" . }} ;
+              /certificate-init-container \
+                -secret-name={{ template "fullname" . }}-secret-tls \
+                -labels=app={{ template "fullname" . }},chart={{ .Chart.Name }},release={{ template "releaseName" . }},heritage={{ .Release.Service }} \
+                -additional-dnsnames={{ template "fullname" . }},{{ template "fullname" . }}.$(NAMESPACE),{{ template "fullname" . }}.$(NAMESPACE).svc \
+                -cert-dir=$(CERT_DIR) \
+                -namespace=$(NAMESPACE) \
+                -pod-ip=$(POD_IP) \
+                -pod-name=$(POD_NAME) \
+                -service-names={{ template "fullname" . }} \
+                -cluster-domain={{ template "cluster_domain" . }}{{ if index .Values "generate-certificates" "signerName" }} \
+                -signer-name={{ index .Values "generate-certificates" "signerName" }}{{- end }}{{ if index .Values "generate-certificates" "signerNamespace" }} \
+                -signer-namespace={{ index .Values "generate-certificates" "signerNamespace" }}{{- end }}{{ if index .Values "generate-certificates" "signerSecret" }} \
+                -signer-secret={{ index .Values "generate-certificates" "signerSecret" }}{{- end }};
       {{- end }}
       {{- if (index .Values "keycloak" "enabled") }}
         - name: keycloak-secret-init
