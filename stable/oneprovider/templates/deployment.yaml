@@ -432,10 +432,6 @@ spec:
             mountPropagation: Bidirectional
         {{- end }}
       {{- end }}
-      {{- if (index .Values "posix" "persistence" "enabled") }}
-          - mountPath: {{ .Values.posix.storagePath }}
-            name: posix-persistence
-      {{- end }}
       {{- if and (index .Values "volume-data-sync" "enabled") (eq (int .Values.oneprovider_nodes_count) 1) }}
         {{- range $volume := (index .Values "volume-data-sync" "volumes") }}
       - name: {{ $volume.name }}
@@ -515,7 +511,7 @@ spec:
         {{- end }}
       {{- end }}
     {{- if (index .Values "posix" "persistence" "enabled") }}
-      - name: posix-persistence
+      - name: persistence-posix
         persistentVolumeClaim:
           claimName: {{ template "fullname" $ }}-{{ index .Values "posix" "persistence" "name" }}-posix-pvc
     {{- end }}
