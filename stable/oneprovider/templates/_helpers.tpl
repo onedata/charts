@@ -34,12 +34,15 @@ spec:
   resources:
     requests:
       storage: {{ .storageClaim }}
-  selector: 
+{{- if ne .storageClassName "none" }}
+  selector:
     matchLabels:
       type: {{ .type }}
       name: {{ printf "%s" .name | trunc 63 | trimSuffix "-" }}
       owner: {{ .root.Values.suffix }}
-  storageClassName: ""
+      release: {{ template "releaseName" .root }}
+  storageClassName: {{ .storageClassName | quote }}
+{{- end }}
 {{ end }}
 
 {{- define "oneprovider.pv-generate" -}}
@@ -47,7 +50,7 @@ spec:
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" .root }}{{- printf "-%s" .type | trunc 63 | trimSuffix "-" -}}{{- printf "-%s" .name | trunc 63 | trimSuffix "-" -}}-pvc
+  name: {{ template "fullname" .root }}{{- printf "-%s" .type | trunc 63 | trimSuffix "-" -}}{{- printf "-%s" .name | trunc 63 | trimSuffix "-" -}}-pv
   labels:
     app: {{ template "fullname" .root }}
     chart: {{ .root.Chart.Name }}

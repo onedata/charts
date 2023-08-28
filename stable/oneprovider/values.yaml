@@ -370,6 +370,22 @@ volume-nfs:
     enabled: true
   readOnly: false
 
+# Create NFS storage server and connect with oneprovider using native nfs driver
+volume-nfs-native:
+  enabled: false
+  suffix: *providerSuffix
+  hostname: "" # generates default nfs server address
+  version: "3"
+  connectionPoolSize: 10
+  dirCache: true
+  readAhead: 0
+  autoReconnect: "1"
+  storagePathType: "canonical"
+  exports: &nfs-exports
+  - name: empty
+    luma-enabled: *luma_enabled_nfs
+    readOnly: false
+
 # Create gluster storage server and connect with oneprovider with tested default values
 volume-gluster:
   enabled: false

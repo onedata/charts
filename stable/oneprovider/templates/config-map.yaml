@@ -133,6 +133,30 @@ data:
         {{- end }}
         {{- end }}{{- end }}
       {{- end }}
+      {{- if (index .Values "volume-nfs-native" "enabled") }}
+        {{- if (index .Values "volume-nfs-native" "exports") }}{{- range $export := (index .Values "volume-nfs-native" "exports" ) }}
+        nfs-native-{{ $export.name }}:
+          type: nfs
+          {{- if $export.hostname }}
+          host: {{ $export.hostname }}
+          {{- else if (index $.Values "volume-nfs-native" "hostname") }}
+          host: {{ (index $.Values "volume-nfs-native" "hostname") }}
+          {{- else }}
+          host: {{ template "volume-nfs_name" $ }}.{{ $.Release.Namespace }}
+          {{- end }}
+          version: {{ default (index $.Values "volume-nfs-native" "version") $export.version }}
+          volume: /exports/{{ default (index $.Values "volume-nfs-native" "name") $export.name }}
+          connectionPoolSize: {{ default (index $.Values "volume-nfs-native" "connectionPoolSize") $export.connectionPoolSize }}
+          dirCache: {{ default (index $.Values "volume-nfs-native" "dirCache") $export.dirCache }}
+          readAhead: {{ default (index $.Values "volume-nfs-native" "readAhead") $export.readAhead }}
+          autoReconnect: {{ default (index $.Values "volume-nfs-native" "autoReconnect") $export.autoReconnect }}
+          storagePathType: {{ default (index $.Values "volume-nfs-native" "storagePathType") $export.storagePathType }}
+          skipStorageDetection: {{ index $export "readOnly" }}
+        {{- if (index $export "image") }}
+          importedStorage: true
+        {{- end }}
+        {{- end }}{{- end }}
+      {{- end }}
       {{- if (index .Values "volume-s3" "enabled") }}
         s3:
           type: s3

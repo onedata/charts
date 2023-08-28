@@ -1,7 +1,7 @@
 {{- if (index .Values "volume-nfs" "enabled") }}
   {{ if (index .Values "volume-nfs" "exports") }}
     {{- range $export := (index .Values "volume-nfs" "exports" ) }}
-      {{- template "oneprovider.pvc-generate" dict "root" $ "export" $export "name" $export.name "storageClaim" $export.storageClaim "type" "nfs" }}
+      {{- template "oneprovider.pvc-generate" dict "root" $ "export" $export "name" $export.name "storageClaim" $export.storageClaim "type" "nfs" "storageClassName" "" "accessModes" $export.accessModes }}
     {{- end }}
   {{- end }}
 {{- end }}

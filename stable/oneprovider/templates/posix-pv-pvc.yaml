@@ -1,4 +1,3 @@
 {{- if (index .Values "posix" "persistence" "enabled") }}
-    {{- template "oneprovider.pvc-generate" dict "root" $ "name" (index .Values "posix" "persistence" "name") "storageClaim" (index .Values "posix" "persistence" "size") "type" "posix" }}
-    {{- template "oneprovider.pv-generate" dict "root" $ "name" (index .Values "posix" "persistence" "name") "storageClaim" (index .Values "posix" "persistence" "size") "type" "posix" }}
+    {{- template "oneprovider.pvc-generate" dict "root" $ "name" (index .Values "posix" "persistence" "name") "storageClaim" (index .Values "posix" "persistence" "size") "type" "posix" "storageClassName" "none" "accessModes" (index .Values "posix" "persistence" "accessModes") }}
 {{- end }}
