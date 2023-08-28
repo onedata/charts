@@ -381,6 +381,11 @@ spec:
           - name: config-map
             mountPath: /etc/op_worker/overlay.config
             subPath:  worker-overlay.config
+      {{- if .Values.openfaas.enabled}}
+          - name: config-map
+            mountPath: /etc/op_worker/config.d/openfaas.config
+            subPath: openfaas.config
+      {{- end }}
       {{- range $fileName, $config := (index .Values "workerExtraOverlayConfigs") }}
           - name: config-map
             mountPath: /etc/op_worker/config.d/{{ $fileName }}
