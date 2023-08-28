@@ -73,6 +73,7 @@ spec:
             {{- end }}
           {{- end }}
         {{- end }}
+            sed -i 's# --no-nfs-version 3##g; s#\# /usr/sbin/rpc.idmapd#/usr/sbin/rpc.idmapd#g; s#\# /usr/sbin/rpc.gssd -v#/usr/sbin/rpc.gssd -v#g; s#\# /usr/sbin/rpc.statd#/usr/sbin/rpc.statd#g'; /usr/bin/nfsd.sh
             /usr/bin/nfsd.sh ;
         ports:
           - name: nfs

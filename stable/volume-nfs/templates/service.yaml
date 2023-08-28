@@ -16,11 +16,19 @@ metadata:
 spec:
   type: {{ .Values.serviceType }}
   ports:
-    - name: nfs
+    - name: nfs-tcp
       port: 2049
+      protocol: TCP
+    - name: nfs-udp
+      port: 2049
+      protocol: UDP
     - name: mountd
       port: 20048
-    - name: rpcbind
+    - name: rpcbind-tcp
       port: 111
+      protocol: TCP
+    - name: rpcbind-udp
+      port: 111
+      protocol: UDP
   selector:
     app: {{ template "fullname" . }}
