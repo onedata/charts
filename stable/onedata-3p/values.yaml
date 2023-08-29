@@ -234,6 +234,8 @@ oneprovider-paris:
   openfaas:
     enabled: *openfaas_enabled
     suffix: *op2s
+    createCRDs: false
+
   openfaas-pod-status-monitor:
     enabled: *openfaas_pod_status_monitor_enabled
     suffix: *op2s
@@ -324,6 +326,8 @@ oneprovider-lisbon:
   openfaas:
     enabled: *openfaas_enabled
     suffix: *op3s
+    createCRDs: false
+
   openfaas-pod-status-monitor:
     enabled: *openfaas_pod_status_monitor_enabled
     suffix: *op3s
