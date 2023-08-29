@@ -1,0 +1,42 @@
+# Default values for luma
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image: onedata/handle-proxy-mock:v3
+imagePullPolicy: IfNotPresent
+serviceType: ClusterIP
+
+wait_for:
+  image: groundnuty/k8s-wait-for:v2.0
+  imagePullPolicy: IfNotPresent
+
+# Wait for onezone service to start
+wait_for_onezone:
+  enabled: true
+
+# Onepanel credentials
+onepanel_admin_users:
+  - name: admin
+    password: password
+
+# The generalization of nodeSelector.
+# Allows for more fine grained controls over which
+# nodes are selected by a kubernetes scheduler
+# https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+# List of taints which are tolerated by the pods 
+# when nodes are selected by a kubernetes scheduler
+# https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+# Specify a map of key-value pairs. For the pod 
+# to be eligible to run on a node, the node 
+# must have each of the indicated key-value pairs as labels
+# https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
+# Users to registered into handle-proxy-mock, must exit in onezone
+users:
+  - name: joe
+  - name: admin

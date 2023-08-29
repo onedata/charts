@@ -686,6 +686,55 @@
   {{- end -}}
 {{- end -}}
 
+{{- define "handle-proxy-mock_name" -}}
+  {{- $releaseName := .Release.Name | toString -}}
+  {{- if .Values.global }}
+    {{- $releaseName = default .Release.Name .Values.global.releaseNameOverride | toString -}}
+  {{- end -}}
+  {{- if .Values.handle_proxy_mock_service_url -}}
+    {{- if eq .Values.handle_proxy_mock_service_url.type "auto-generate" -}}
+      {{- if .Values.handle_proxy_mock_service_url.disableSuffix -}}
+        {{- $suffix :=  "" | toString -}}
+        {{- printf "%s-%s-%s" $releaseName "handle-proxy-mock" $suffix | trunc 63 | trimSuffix "-" -}}
+      {{- else -}}
+        {{- $suffix := default "" .Values.suffix | toString -}}
+        {{- printf "%s-%s-%s" $releaseName "handle-proxy-mock" $suffix | trunc 63 | trimSuffix "-" -}}
+      {{- end -}}
+    {{- else if eq .Values.handle_proxy_mock_service_url.type "k8s-service" -}}
+      {{- if .Values.handle_proxy_mock_service_url.namespace -}}
+        {{/* TODO */}}
+      {{- else -}}
+        {{ .Values.handle_proxy_mock_service_url.service_name }}
+      {{- end -}}
+    {{- else if eq .Values.handle_proxy_mock_service_url.type "http" -}}
+      {{/* TODO */}}
+    {{- end -}}
+  {{- else -}}
+        {{- $suffix := default "" .Values.suffix | toString -}}
+        {{- printf "%s-%s-%s" $releaseName "handle-proxy-mock" $suffix | trunc 63 | trimSuffix "-" -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "handle-proxy-mock_service_url" -}}
+  {{- if .Values.handle_proxy_mock_service_url -}}
+    {{- if eq .Values.handle_proxy_mock_service_url.type "auto-generate" -}}
+        {{ template "handle-proxy-mock_name" . }}.{{template "service_namespace_domain" . }}
+    {{- else if eq .Values.handle_proxy_mock_service_url.type "k8s-service" -}}
+      {{- if .Values.handle_proxy_mock_service_url.namespace -}}
+        {{ .Values.handle_proxy_mock_service_url.service_name }}.{{ .Values.handle_proxy_mock_service_url.namespace }}.{{template "service_domain" . }}
+      {{- else -}}
+        {{ .Values.handle_proxy_mock_service_url.service_name }}.{{template "service_namespace_domain" .}}
+      {{- end -}}
+    {{- else if eq .Values.handle_proxy_mock_service_url.type "http" -}}
+      {{ .Values.handle_proxy_mock_service_url.address }}
+    {{- else -}}
+      {{ template "handle-proxy-mock_name" . }}.{{template "service_namespace_domain" . }}
+    {{- end -}}
+  {{- else -}}
+      {{ template "handle-proxy-mock_name" . }}.{{template "service_namespace_domain" . }}
+  {{- end -}}
+{{- end -}}
+
 {{- define "_name" -}}
   {{- $releaseName := .Release.Name | toString -}}
   {{- if .Values.global }}

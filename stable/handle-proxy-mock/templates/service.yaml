@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: {{ .Chart.Name }}
+    release: {{ template "releaseName" . }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Chart.Name }}
+  annotations:
+    version: "{{ .Chart.Version }}"
+spec:
+  type: {{ .Values.serviceType }}
+  ports:
+    - name: handle-proxy-mock
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: {{ template "fullname" . }}

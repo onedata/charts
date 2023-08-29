@@ -35,3 +35,8 @@ dependencies:
   version: 0.1.5
   repository: file://../token-dispenser
   condition: token-dispenser.enabled
+
+- name: handle-proxy-mock
+  version: 0.1.0
+  repository: file://../handle-proxy-mock
+  condition: handle-proxy-mock.enabled

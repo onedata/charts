@@ -221,6 +221,9 @@ auth-conf:
   openIdConfig: ""
   extraIdps: ""
 
+handle-proxy-mock:
+  enabled: false
+
 # Add additional volume mounts definition to onezone container
 external-volume-mounts: {}
 
