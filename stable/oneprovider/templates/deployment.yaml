@@ -36,7 +36,11 @@ spec:
     spec:
       subdomain: {{ template "fullname" . }}
       hostNetwork: {{ template "hostNetwork" . }}
-      terminationGracePeriodSeconds: 3
+      {{- if .Values.gracefulStop.enabled }}
+      terminationGracePeriodSeconds: {{ .Values.gracefulStop.terminationGracePeriodSeconds }}
+      {{- else }}
+      terminationGracePeriodSeconds: 0
+      {{- end }}
       {{- if or .Values.affinity .Values.onedata_anti_affinity_enabled }}
       affinity:
       {{- if .Values.onedata_anti_affinity_enabled }}
@@ -300,9 +304,28 @@ spec:
             if [ "$HOSTNAME" = "{{ template "fullname" . }}-{{ sub (.Values.oneprovider_nodes_count) 1 }}" ]; then getOneproviderRegistrationToken & fi ;
           {{- end }}
           {{- end }}{{- end }}
-            /root/oneprovider.sh ;
+            exec /root/oneprovider.sh ;
         securityContext:
           privileged: {{ .Values.privileged }}
+      {{- if .Values.gracefulStop.enabled }}
+        lifecycle:
+          preStop:
+            exec:
+              command:
+                - "sh"
+                - "-c"
+                - >
+                  if [ -f /root/oneprovider-stop-graceful.sh ]; then
+                    /root/oneprovider-stop-graceful.sh ;
+                  else
+                    service op_panel stop  > /proc/1/fd/1 ;
+                    service op_worker stop > /proc/1/fd/1 ;
+                    service cluster_manager stop > /proc/1/fd/1 ;
+                    service couchbase-server stop > /proc/1/fd/1 ;
+                    echo "From preStop: all Oneprovider services stopped! Running kill 9 to kill entrypoint and let oneprovider pod die." > /proc/1/fd/1 ;
+                    kill 10 ;
+                  fi ;
+      {{- end }}
       {{- if or (index .Values "volume-nfs" "enabled") (and (index .Values "onezone-registration-token" "enabled") .Values.onepanel_batch_mode_enabled) }}
         lifecycle:
       {{- end }}

@@ -232,3 +232,8 @@ external-volumes: {}
 
 # Add additional persistent volumes claim templates definition
 external-persistent-volume-claims-templates: {}
+
+gracefulStop:
+  enabled: true
+  # default 86400 seconds, 24h
+  terminationGracePeriodSeconds: 86400

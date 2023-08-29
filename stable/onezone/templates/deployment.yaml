@@ -36,7 +36,12 @@ spec:
     spec:
       subdomain: {{ template "fullname" . }}
       hostNetwork: {{ template "hostNetwork" . }}
+      {{- if .Values.gracefulStop.enabled }}
+      # default 86400 seconds, 24h
+      terminationGracePeriodSeconds: {{ .Values.gracefulStop.terminationGracePeriodSeconds }}
+      {{- else }}
       terminationGracePeriodSeconds: 0
+      {{- end }}
       {{- if or .Values.affinity .Values.onedata_anti_affinity_enabled }}
       affinity:
       {{- if .Values.onedata_anti_affinity_enabled }}
@@ -177,7 +182,7 @@ spec:
             export ONEPANEL_OVERRIDE=$(cat /tmp/sources_ready.txt) ;
           {{- end }}
             cp /etc/oz_worker/auth.config.orig /etc/oz_worker/auth.config ;
-            /root/onezone.sh ;
+            exec /root/onezone.sh ;
         readinessProbe:
           exec:
             # A hack, that makes sure that a pod reports ready when onezone has really started
@@ -191,6 +196,25 @@ spec:
           periodSeconds: 1
           successThreshold: 1
           timeoutSeconds: 10
+      {{- if .Values.gracefulStopEnabled }}
+        lifecycle:
+          preStop:
+            exec:
+              command:
+                - "sh"
+                - "-c"
+                - >
+                  if [ -f /root/onezone-stop-graceful.sh ]; then
+                    /root/onezone-stop-graceful.sh ;
+                  else
+                    service oz_panel stop  > /proc/1/fd/1 ;
+                    service oz_worker stop > /proc/1/fd/1 ;
+                    service cluster_manager stop > /proc/1/fd/1 ;
+                    service couchbase-server stop > /proc/1/fd/1 ;
+                    echo "From preStop: all Onezone services stopped! Running kill 9 to kill entrypoint and let onezone pod die." > /proc/1/fd/1 ;
+                    kill 9 ;
+                  fi ;
+      {{- end }}
         env:
           - name: NAMESPACE
             valueFrom:
