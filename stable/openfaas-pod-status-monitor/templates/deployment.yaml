@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: {{ .Chart.Name }}
+    release: {{ template "releaseName" . }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Chart.Name }}
+  annotations:
+    version: "{{ .Chart.Version }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+      chart: {{ .Chart.Name }}
+      release: {{ template "releaseName" . }}
+      heritage: {{ .Release.Service }}
+      component: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        chart: {{ .Chart.Name }}
+        release: {{ template "releaseName" . }}
+        heritage: {{ .Release.Service }}
+        component: {{ .Chart.Name }}
+      annotations:
+        version: "{{ .Chart.Version }}"
+    spec:
+      hostname: {{ .Chart.Name }}
+      subdomain: {{ template "fullname" . }}
+      hostNetwork: {{ template "hostNetwork" . }}
+      terminationGracePeriodSeconds: 3
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+{{ include "imagePullSecrets" . | indent 6 }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ template "imagePullPolicy" dict "root" . }}
+        volumeMounts:
+        - mountPath: /etc/config
+          name: config
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "fullname" . }}-cm

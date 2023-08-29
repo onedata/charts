@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}-cm
+  labels:
+    app: {{ template "fullname" . }}
+    chart: {{ .Chart.Name }}
+    release: {{ template "releaseName" .  }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Chart.Name }}
+  annotations:
+    version: "{{ .Chart.Version }}"
+data:
+  {{- if .Values.serverUrl }}
+  server_url: wss://{{ .Values.serverUrl }}/automation/openfaas/activity_feed/pod_status_monitor
+  {{- else }}
+  server_url: wss://{{ template "oneprovider_service_url" . }}/automation/openfaas/activity_feed/pod_status_monitor
+  {{- end }}
+  secret: {{ .Values.secret }}
+  {{- if .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}

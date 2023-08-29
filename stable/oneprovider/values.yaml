@@ -262,6 +262,11 @@ openfaas:
     readTimeout : "14400s"
     writeTimeout : "14400s"
 
+openfaas-pod-status-monitor:
+  enabled: false
+  suffix: *providerSuffix
+  secret: password
+
 # Luma configuration shared among all the storages
 luma:
   enabled: false
@@ -429,7 +434,7 @@ volume-dcache:
   insecure: true
   luma-enabled: *luma_enabled_webdav
 
-  # Create oneclient instance that will connect to this oneprovider
+# Create oneclient instance that will connect to this oneprovider
 oneclient:
   enabled: false
   onezone_service_url: *onezone_service_url

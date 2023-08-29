@@ -1,0 +1,19 @@
+apiVersion: v2
+name: openfaas-pod-status-monitor
+version: 0.1.0
+description: Allows to capture and process events of k8s pods orchestrated by the OpenFaaS platform.
+keywords:
+  - openfaas
+  - events
+home: https://git.onedata.org/projects/VFS/repos/openfaas-pod-status-monitor/
+sources:
+  - https://git.onedata.org/projects/VFS/repos/openfaas-pod-status-monitor/
+maintainers:
+  - name: Michal Orzechowski
+    email: orzechowski.michal@gmail.com
+appVersion: v1.0
+
+dependencies:
+- name: onedata-chart-utils
+  version: 0.2.15
+  repository: file://../onedata-chart-utils

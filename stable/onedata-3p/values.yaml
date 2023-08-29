@@ -35,6 +35,7 @@ luma_enabled: &luma_enabled false
 jupyter_notebook_enabled: &jupyter_notebook_enabled true
 
 openfaas_enabled: &openfaas_enabled false
+openfaas_pod_status_monitor_enabled: &openfaas_pod_status_monitor_enabled false
 
 posix_enabled: &posix_enabled true
 s3_enabled: &s3_enabled false
@@ -144,6 +145,10 @@ oneprovider-krakow:
     enabled: *openfaas_enabled
     suffix: *op1s
 
+  openfaas-pod-status-monitor:
+    enabled: *openfaas_pod_status_monitor_enabled
+    suffix: *op1s
+
   luma:
     suffix: *op1s
     << : *luma_global
@@ -228,6 +233,9 @@ oneprovider-paris:
 
   openfaas:
     enabled: *openfaas_enabled
+    suffix: *op2s
+  openfaas-pod-status-monitor:
+    enabled: *openfaas_pod_status_monitor_enabled
     suffix: *op2s
 
   luma:
@@ -315,6 +323,9 @@ oneprovider-lisbon:
 
   openfaas:
     enabled: *openfaas_enabled
+    suffix: *op3s
+  openfaas-pod-status-monitor:
+    enabled: *openfaas_pod_status_monitor_enabled
     suffix: *op3s
 
   luma:

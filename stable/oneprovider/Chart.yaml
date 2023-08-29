@@ -77,3 +77,8 @@ dependencies:
   version: 8.0.4
   repository:  file://../../../faas-netes/chart/openfaas
   condition: openfaas.enabled
+
+- name: openfaas-pod-status-monitor
+  version: 0.1.0
+  repository: file://../openfaas-pod-status-monitor
+  condition: openfaas-pod-status-monitor.enabled

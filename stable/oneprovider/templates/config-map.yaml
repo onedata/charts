@@ -42,6 +42,9 @@ data:
       {openfaas_function_env, #{"read_timeout" => "604800s",
                                 "write_timeout" => "604800s",
                                 "exec_timeout" => "604800s"}}
+    {{- if index .Values "openfaas-pod-status-monitor" "enabled"}}
+      ,{openfaas_activity_feed_secret, "{{ index .Values "openfaas-pod-status-monitor" "secret" }}" }
+    {{- end }}
       ]}
     ].
 {{- end }}
