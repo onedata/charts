@@ -101,8 +101,11 @@ spec:
               "token": "$SPACE_TOKEN",
               "size": {{ .size | quote }},
               "storageId": "$STORAGE_ID"
-              {{ if .import -}}{{- if or .import.mode (or .import.continuousScan (or .import.scanInterval (or .import.detectModifications .import.detectDeletions ))) -}}
-                ,"storageImport": {
+              {{- if (hasKey . "dirStatsServiceEnabled") }},
+              "dirStatsServiceEnabled": {{ .dirStatsServiceEnabled }}
+              {{- end }}
+              {{- if .import -}}{{- if or .import.mode (or .import.continuousScan (or .import.scanInterval (or .import.detectModifications .import.detectDeletions ))) }},
+                "storageImport": {
                   {{- if .import.mode -}} "mode": {{ .import.mode | quote }} {{- end }}
                   {{- if or .import.continuousScan (or .import.scanInterval (or .import.detectModifications .import.detectDeletions )) -}}
                   "autoStorageImportConfig": {
