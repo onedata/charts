@@ -29,22 +29,22 @@ cat <<EOF>> $FILENAME
   {{- if .Values.global }}
     {{- \$releaseName = default .Release.Name .Values.global.releaseNameOverride | toString -}}
   {{- end -}}
-  {{- if .Values.${service/-/_}_service_url -}}
-    {{- if eq .Values.${service/-/_}_service_url.type "auto-generate" -}}
-      {{- if .Values.${service/-/_}_service_url.disableSuffix -}}
+  {{- if .Values.${service//-/_}_service_url -}}
+    {{- if eq .Values.${service//-/_}_service_url.type "auto-generate" -}}
+      {{- if .Values.${service//-/_}_service_url.disableSuffix -}}
         {{- \$suffix :=  "" | toString -}}
         {{- printf "%s-%s-%s" \$releaseName "${service}" \$suffix | trunc 63 | trimSuffix "-" -}}
       {{- else -}}
         {{- \$suffix := default "" .Values.suffix | toString -}}
         {{- printf "%s-%s-%s" \$releaseName "${service}" \$suffix | trunc 63 | trimSuffix "-" -}}
       {{- end -}}
-    {{- else if eq .Values.${service/-/_}_service_url.type "k8s-service" -}}
-      {{- if .Values.${service/-/_}_service_url.namespace -}}
+    {{- else if eq .Values.${service//-/_}_service_url.type "k8s-service" -}}
+      {{- if .Values.${service//-/_}_service_url.namespace -}}
         {{/* TODO */}}
       {{- else -}}
-        {{ .Values.${service/-/_}_service_url.service_name }}
+        {{ .Values.${service//-/_}_service_url.service_name }}
       {{- end -}}
-    {{- else if eq .Values.${service/-/_}_service_url.type "http" -}}
+    {{- else if eq .Values.${service//-/_}_service_url.type "http" -}}
       {{/* TODO */}}
     {{- end -}}
   {{- else -}}
@@ -54,17 +54,17 @@ cat <<EOF>> $FILENAME
 {{- end -}}
 
 {{- define "${service}_service_url" -}}
-  {{- if .Values.${service/-/_}_service_url -}}
-    {{- if eq .Values.${service/-/_}_service_url.type "auto-generate" -}}
+  {{- if .Values.${service//-/_}_service_url -}}
+    {{- if eq .Values.${service//-/_}_service_url.type "auto-generate" -}}
         {{ template "${service}_name" . }}.{{template "service_namespace_domain" . }}
-    {{- else if eq .Values.${service/-/_}_service_url.type "k8s-service" -}}
-      {{- if .Values.${service/-/_}_service_url.namespace -}}
-        {{ .Values.${service/-/_}_service_url.service_name }}.{{ .Values.${service/-/_}_service_url.namespace }}.{{template "service_domain" . }}
+    {{- else if eq .Values.${service//-/_}_service_url.type "k8s-service" -}}
+      {{- if .Values.${service//-/_}_service_url.namespace -}}
+        {{ .Values.${service//-/_}_service_url.service_name }}.{{ .Values.${service//-/_}_service_url.namespace }}.{{template "service_domain" . }}
       {{- else -}}
-        {{ .Values.${service/-/_}_service_url.service_name }}.{{template "service_namespace_domain" .}}
+        {{ .Values.${service//-/_}_service_url.service_name }}.{{template "service_namespace_domain" .}}
       {{- end -}}
-    {{- else if eq .Values.${service/-/_}_service_url.type "http" -}}
-      {{ .Values.${service/-/_}_service_url.address }}
+    {{- else if eq .Values.${service//-/_}_service_url.type "http" -}}
+      {{ .Values.${service//-/_}_service_url.address }}
     {{- else -}}
       {{ template "${service}_name" . }}.{{template "service_namespace_domain" . }}
     {{- end -}}
