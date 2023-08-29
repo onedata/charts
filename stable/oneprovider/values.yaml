@@ -447,6 +447,10 @@ oneclient:
     type: auto-generate
     disableSuffix: true
 
+# Resultstreamer configuration that is injected to openfaas configuration
+openfaas-lambda-result-streamer:
+  image: onedata/openfaas-lambda-result-streamer:21.02.3
+
 # This section will be added the end of 'storages' section in oneprovider
 # cluster configuration
 # avoid storage names: posix, nfs, ceph, s3, gluster, swift
