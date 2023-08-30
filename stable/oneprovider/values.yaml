@@ -253,14 +253,29 @@ openfaas:
   functionNamespace: ""
   generateBasicAuth: false
   gateway:
+    image: onedata/openfaas-gateway:0.26.3
     readTimeout : "14400s"
     writeTimeout : "14400s"
     upstreamTimeout : "14000s"
   basic_auth: true
   basicAuthPassword: password
+  operator:
+    image: onedata/openfaas-faas-netes:0.16.4
+  queueWorker:
+    image: onedata/openfaas-queue-worker:0.13.0
+    ackWait: "14000s"
+    maxInflight: 5
   faasnetes:
+    image: onedata/openfaas-faas-netes:0.16.4
     readTimeout : "14400s"
     writeTimeout : "14400s"
+    readinessProbe:
+      initialDelaySeconds: 1
+      timeoutSeconds: 20
+      periodSeconds: 1
+  prometheus:
+    extraFlags:
+      - --storage.tsdb.retention.time=1d
 
 openfaas-pod-status-monitor:
   enabled: false
