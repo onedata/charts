@@ -270,6 +270,8 @@ spec:
             while [ ! -f /tmp/sources_ready.txt ]; do sleep 1; done ;
             export ONEPANEL_OVERRIDE=$(cat /tmp/sources_ready.txt) ;
           {{- end }}
+          {{- if .Values.global }}{{- if (index .Values "global" "v21") }}
+          {{- if and (index .Values "onezone-registration-token" "enabled") .Values.onepanel_batch_mode_enabled }}
             getOneproviderRegistrationToken() {
               if [ "$HOSTNAME" = "{{ template "fullname" . }}-{{ sub (.Values.oneprovider_nodes_count) 1 }}" ]; then 
               apt update ; apt install -y jq ;
@@ -296,6 +298,8 @@ spec:
               exit 0  ;
             fi; } ;
             if [ "$HOSTNAME" = "{{ template "fullname" . }}-{{ sub (.Values.oneprovider_nodes_count) 1 }}" ]; then getOneproviderRegistrationToken & fi ;
+          {{- end }}
+          {{- end }}{{- end }}
             /root/oneprovider.sh ;
         securityContext:
           privileged: {{ .Values.privileged }}
