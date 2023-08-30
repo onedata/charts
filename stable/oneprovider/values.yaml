@@ -454,6 +454,8 @@ oneclient:
   enabled: false
   onezone_service_url: *onezone_service_url
   suffix: *providerSuffix
+  # This is propagated to oneprovider openfaas config
+  lambda_sidecar_flags: ""
   directIO:
     nfs:
       enable: true
