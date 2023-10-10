@@ -386,6 +386,13 @@ spec:
           - name: {{ .name | quote }}
             value: {{ .value | quote }}
           {{- end }}
+        {{- if or (and (index .Values "volume-nfs" "enabled") (index .Values "volume-nfs" "exports")) (and (index .Values "volume-data-sync" "enabled") (eq (int .Values.oneprovider_nodes_count) 1)) }}
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+              - SYS_ADMIN
+          {{- end }}
         volumeMounts:
     {{- if (index .Values "posix" "persistence" "enabled") }}
           - name: persistence-posix
