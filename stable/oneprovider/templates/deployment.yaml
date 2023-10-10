@@ -488,7 +488,7 @@ spec:
             chmod -R {{ $a_permission.mask }} {{ $volume.dataPath }}/{{ $a_permission.path }} ;
             {{- end }}
             {{- end }}
-            while true ; do sleep 1 ; done ;
+            while ! [ -f /tmp/exit-container ] ; do sleep 1 ; done ;
         lifecycle:
           preStop:
             exec:
@@ -500,6 +500,7 @@ spec:
                   mount -o remount,rw /{{ $volume.name }} ;
                   {{- end }}
                   umount -fl /{{ $volume.name }};
+                  touch /tmp/exit-container ;
         volumeMounts:
           - mountPath: /{{ $volume.name }}
             mountPropagation: Bidirectional
