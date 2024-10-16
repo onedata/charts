@@ -15,5 +15,5 @@ appVersion: 20.02.12
 
 dependencies:
 - name: onedata-chart-utils
-  version: 0.2.16
+  version: 0.2.15
   repository: file://../onedata-chart-utils
