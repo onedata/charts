@@ -51,6 +51,10 @@ onepanel_generated_cert_domain: ""
 #   be used in production.
 onepanel_trust_test_ca: true
 
+# If enabled, onezone allows oneproviders to register their subdomains 
+# under onezone domain.
+subdomainDelegationSupported: false
+
 # Indicates policy enforced during provider registration. Possible options are:
 #  open - anyone can acquire a registration token and register a new Oneprovider
 #  restricted - requires an administrative privilege 'oz_providers_invite'

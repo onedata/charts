@@ -264,6 +264,11 @@ spec:
           - name: config-map
             mountPath: /etc/oz_worker/overlay.config
             subPath:  worker-overlay.config
+      {{- if .Values.subdomainDelegationSupported}}
+          - name: config-map
+            mountPath: /etc/oz_worker/config.d/worker-dns.config
+            subPath:  worker-dns.config
+      {{- end }}
       {{- range $fileName, $config := (index .Values "workerExtraOverlayConfigs") }}
           - name: config-map
             mountPath: /etc/oz_worker/config.d/{{ $fileName }}

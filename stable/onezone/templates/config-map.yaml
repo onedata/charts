@@ -13,6 +13,12 @@ metadata:
 data:
   panel-overlay.config: {{ toYaml .Values.panelOverlayConfig | indent 2 }}
   worker-overlay.config: {{ toYaml .Values.workerOverlayConfig | indent 2 }}
+{{- if .Values.subdomainDelegationSupported}}
+  worker-dns.config: |-
+    [{oz_worker, [
+      {subdomain_delegation_supported, {{ .Values.subdomainDelegationSupported }}}
+    ]}].
+{{- end }}
 {{- range $fileName, $config := (index .Values "panelExtraOverlayConfigs") }}
   panel-{{ $fileName }}: {{ toYaml $config | indent 2 }}
 {{- end }}
