@@ -27,7 +27,7 @@ dependencies:
       parent: keycloak-workaround.init
 
 - name: elasticsearch
-  version: 0.1.2
+  version: 0.1.3
   repository: file://../elasticsearch
   condition: elasticsearch.enabled
 
