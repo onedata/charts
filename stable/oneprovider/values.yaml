@@ -262,7 +262,7 @@ openfaas:
   operator:
     image: onedata/openfaas-faas-netes:0.16.4
   queueWorker:
-    image: onedata/openfaas-queue-worker:0.13.0
+    image: onedata/openfaas-queue-worker:0.13.1
     ackWait: "14000s"
     maxInflight: 5
     disableTlsCertificateValidation: false
