@@ -40,3 +40,8 @@ dependencies:
   version: 0.1.0
   repository: file://../handle-proxy-mock
   condition: handle-proxy-mock.enabled
+
+- name: pebble
+  version: 1.2.0
+  repository: https://jupyterhub.github.io/helm-chart
+  condition: pebble.enabled
