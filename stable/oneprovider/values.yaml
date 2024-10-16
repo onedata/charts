@@ -265,6 +265,7 @@ openfaas:
     image: onedata/openfaas-queue-worker:0.13.0
     ackWait: "14000s"
     maxInflight: 5
+    disableTlsCertificateValidation: false
   faasnetes:
     image: onedata/openfaas-faas-netes:0.16.4
     readTimeout : "14400s"

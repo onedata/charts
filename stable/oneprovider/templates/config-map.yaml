@@ -30,6 +30,7 @@ data:
     [{op_worker, [
       {openfaas_host, <<"{{ template "openfaas_name" . }}-gateway">>},
       {openfaas_port, 8080},
+      {openfaas_disable_tls_verification, {{ .Values.openfaas.queueWorker.disableTlsCertificateValidation }}},
       {openfaas_function_namespace, <<"{{ $.Release.Namespace }}">> },
       {openfaas_oneclient_image, <<"{{ .Values.oneclient.image }}">> },
       {openfaas_oneclient_flags, <<"{{ .Values.oneclient.lambda_sidecar_flags }}">> },
