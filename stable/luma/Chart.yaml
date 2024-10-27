@@ -13,7 +13,7 @@ sources:
 maintainers:
   - name: Michal Orzechowski
     email: orzechowski.michal@gmail.com
-appVersion: 20.02.12
+appVersion: 21.02.7
 
 dependencies:
 - name: onedata-chart-utils

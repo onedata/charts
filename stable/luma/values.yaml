@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-image: onedata/luma:20.02.12
+image: onedata/luma:21.02.7
 imagePullPolicy: IfNotPresent
 serviceType: ClusterIP
 

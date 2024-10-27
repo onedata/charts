@@ -2,12 +2,12 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-image: onedata/oneprovider:20.02.12
+image: onedata/oneprovider:21.02.7
 imagePullPolicy: IfNotPresent
 serviceType: ClusterIP
 
 onedata_cli:
-  image: onedata/rest-cli:20.02.12
+  image: onedata/rest-cli:21.02.7
   imagePullPolicy: IfNotPresent
 
 wait_for:
@@ -467,7 +467,7 @@ oneclient:
 
 # Resultstreamer configuration that is injected to openfaas configuration
 openfaas-lambda-result-streamer:
-  image: onedata/openfaas-lambda-result-streamer:21.02.3
+  image: onedata/openfaas-lambda-result-streamer:21.02.7
 
 # This section will be added the end of 'storages' section in oneprovider
 # cluster configuration
