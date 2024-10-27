@@ -51,7 +51,7 @@ onepanel_generated_cert_domain: ""
 #   be used in production.
 onepanel_trust_test_ca: true
 
-# If enabled, onezone allows oneproviders to register their subdomains 
+# If enabled, onezone allows oneproviders to register their subdomains
 # under onezone domain.
 subdomainDelegationSupported: false
 
@@ -187,7 +187,7 @@ main_onezone_admin: &main_onezone_admin
   password: password
 
 # List of onezone admin users
-onezone_admin_users: 
+onezone_admin_users:
   - *main_onezone_admin
   - *onepanel_emergency_account
 

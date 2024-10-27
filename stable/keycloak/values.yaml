@@ -22,7 +22,7 @@ init: #&init
   # Disable initialization job
   enabled: true
   # Keycloak admin credentials
-  adminUsername: &adminUsername admin 
+  adminUsername: &adminUsername admin
   adminPassword: &adminPassword password
   # Realm and open-id client
   realmId: onedata
@@ -31,7 +31,7 @@ init: #&init
   # to be consumed by other services.
   publishClientSecret: true
 
-# The list of keycloak users that will be created by 
+# The list of keycloak users that will be created by
 # a initialization job. The format of this list must leave place
 # for other possible idps. Hence the list and an enable flag
 # of idps that can create a suer.
@@ -55,7 +55,7 @@ users:
 # The yaml reference feature is used to create a tree while group
 # definitions are defined as a yaml list. The group creation mechanism
 # iterates through the list and traverses each group and it's children,
-# creating all the groups in the hierarchy. In order to mark which groups 
+# creating all the groups in the hierarchy. In order to mark which groups
 # are already a part of a tree hierarchy and should not be created again when
 # a list iteration reaches them, the child flag is introduced.
 groups:

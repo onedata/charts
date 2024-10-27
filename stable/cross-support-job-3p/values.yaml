@@ -45,7 +45,7 @@ onedata-3p:
   swift_enabled: &swift_enabled false
   webdav_enabled: &webdav_enabled false
   dcache_enabled: &dcache_enabled false
-  
+
   token_dispenser_enabled: &token_dispenser_enabled true
 
   oneprovider-krakow:
@@ -71,7 +71,7 @@ onedata-3p:
       enabled: *nfs_enabled
     volume-gluster:
       enabled: *gluster_enabled
-      
+
   oneprovider-lisbon:
     posix:
       enabled: *posix_enabled
@@ -96,7 +96,7 @@ volume-nfs:
   enabled: *nfs_enabled
 volume-gluster:
   enabled: *gluster_enabled
-  
+
 
 # Or manually specify a helm release name of the already
 # deployed environment
@@ -127,25 +127,25 @@ users:
 # and support configuration jobs
 spaces:
   - name: "krk-3"
-    user: *user_joe 
+    user: *user_joe
     supports:
       - provider: "krakow"
         storage_name: "ceph"
         size: '1000000000'
   - name: "par-n"
-    user: *user_joe 
+    user: *user_joe
     supports:
       - provider: "paris"
         storage_name: "nfs"
         size: '1000000000'
   - name: "lis-3"
-    user: *user_joe 
+    user: *user_joe
     supports:
       - provider: "lisbon"
         storage_name: "s3"
         size: '1000000000'
   - name: "krk-n-par-3"
-    user: *user_joe 
+    user: *user_joe
     supports:
       - provider: "krakow"
         storage_name: "nfs"
@@ -154,7 +154,7 @@ spaces:
         storage_name: "s3"
         size: '1000000000'
   - name: "krk-3-lis-c"
-    user: *user_joe 
+    user: *user_joe
     supports:
       - provider: "krakow"
         storage_name: "s3"
@@ -163,7 +163,7 @@ spaces:
         storage_name: "ceph"
         size: '1000000000'
   - name: "par-n-lis-c"
-    user: *user_joe 
+    user: *user_joe
     supports:
       - provider: "paris"
         storage_name: "nfs"
@@ -172,7 +172,7 @@ spaces:
         storage_name: "ceph"
         size: '1000000000'
   - name: "krk-3-par-c-lis-n"
-    user: *user_joe 
+    user: *user_joe
     supports:
       - provider: "krakow"
         storage_name: "s3"
@@ -184,7 +184,7 @@ spaces:
         storage_name: "nfs"
         size: '1000000000'
   - name: "krk-3-par-c-lis-n"
-    user: *user_joe 
+    user: *user_joe
     supports:
       - provider: "krakow"
         storage_name: "s3"
@@ -194,15 +194,15 @@ spaces:
         size: '1000000000'
       - provider: "lisbon"
         storage_name: "nfs"
-        size: '1000000000'  
+        size: '1000000000'
   - name: "krk-g"
-    user: *user_joe 
+    user: *user_joe
     supports:
       - provider: "krakow"
         storage_name: "gluster"
-        size: '1000000000' 
+        size: '1000000000'
   - name: "krk-g-par-3"
-    user: *user_joe 
+    user: *user_joe
     supports:
       - provider: "krakow"
         storage_name: "gluster"
@@ -217,13 +217,13 @@ spaces:
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
-# List of taints which are tolerated by the pods 
+# List of taints which are tolerated by the pods
 # when nodes are selected by a kubernetes scheduler
 # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 tolerations: []
 
-# Specify a map of key-value pairs. For the pod 
-# to be eligible to run on a node, the node 
+# Specify a map of key-value pairs. For the pod
+# to be eligible to run on a node, the node
 # must have each of the indicated key-value pairs as labels
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}

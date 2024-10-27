@@ -97,70 +97,70 @@ spec:
           - name: ONECLIENT_PROVIDER_HOST
             value: "{{ template "oneprovider_name" . }}"
         command:
-         - "sh"
-         - "-c"
-         - >
-           trap : TERM INT ;
-           echo "source /oneclient-mount.sh" >> ~/.bashrc ;
-           {{- if (index .Values "deployFromSources" "enabled") }}
-             while [ ! -f /tmp/sources_ready.txt ]; do sleep 1; done ;
-           {{- end }}
-           while [ "${ONECLIENT_PROVIDER_ID}" = "" ]; do
-             ONECLIENT_PROVIDER_ID="$(curl -k https://$ONECLIENT_PROVIDER_HOST/configuration 2>/dev/null | tr ',     ' '\n' | grep 'providerId' | tr -d '"' | cut -d ':' -f 2)";
-             if [ "$ONECLIENT_PROVIDER_ID" = "" ]; then
-               echo "[main process] Cannot obtain ONECLIENT_PROVIDER_ID=$ONECLIENT_PROVIDER_ID of Oneprovider host=$ONECLIENT_PROVIDER_HOST";
-               sleep 2;
-             fi;
-           done;
-           echo "[main process] Connecting users to Oneprovider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID";
-           {{- range $user := .Values.users }}{{ if hasKey . "oneclient"  }}{{ if has $.Values.suffix $user.oneclient }}{{ if .idps }}
-           {{- if (hasKey $user.idps "onepanel") }}{{ if ($user.idps.onepanel.enabled) }}
-           idp=onepanel;
-           {{- end }}{{- end }}
-           {{- if (hasKey $user.idps "keycloak") }}{{ if ($user.idps.keycloak.enabled) }}
-           idp=keycloak-rhea;
-           {{- end }}{{- end }}
-           ONECLIENT_ACCESS_TOKEN=$(curl --silent -k -u {{ $user.name }}:{{ $user.password }} http://{{ template "token-dispenser_name" $ }}/api/v1.0/token/$idp);
-           mount_dir="/mnt/oneclient/{{ $user.name }}";
-           mkdir -p "$mount_dir" ;
-           logs_dir="/tmp/oneclient/{{ $user.name }}";
-           mkdir -p "$logs_dir" ;
-           mount_{{ $user.name }}() {
-             touch /oneclient_mounting_{{ $user.name }} ;
-             all_{{ $user.name }}_providers=$(curl  -k -sS --tlsv1.2 -H "X-Auth-Token: $1" -X GET "https://{{ template "onezone_name" $ }}/api/v3/onezone/user/effective_providers") ;
-             echo "[{{ $user.name }}] List of oneproviders that support user={{ $user.name }}: $all_{{ $user.name }}_providers" ;
-             if ! echo "$all_{{ $user.name }}_providers" | grep -q $ONECLIENT_PROVIDER_ID ; then
-               echo "[{{ $user.name }}] User user={{ $user.name }} has no space supported by provider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID.";
-               while ! echo "$all_{{ $user.name }}_providers" | grep -q $ONECLIENT_PROVIDER_ID ; do
-                 echo "[{{ $user.name }}] Waiting for id=$ONECLIENT_PROVIDER_ID to appear on the list of effective providers=$all_{{ $user.name }}_providers for the user={{ $user.name }}" ;
-                 sleep 2 ;
-                 all_{{ $user.name }}_providers=$(curl  -k -sS --tlsv1.2 -H "X-Auth-Token: $1" -X GET "https://{{ template "onezone_name" $ }}/api/v3/onezone/user/effective_providers") ;
-               done ;
-             fi
-             echo "[{{ $user.name }}] Provider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID is on the list of effective providers=$all_{{ $user.name }}_providers of user={{ $user.name }}" ;
-             echo "[{{ $user.name }}] Mounting oneclient in $2 for user={{ $user.name }}, from idp=$3, using TOKEN=$1.";
-             while ! mount | grep -q "$2" ; do
-               oneclient -t "$1" --log-dir "$2" {{ $.Values.oneclientFlags }} "$3";
-               i=1;
-               max_i=30;
-               while ! mount | grep -q "$2" && [ $i -le $max_i ] ; do echo "[{{ $user.name }}] Waiting ${i}/${max_i} time for mount $2. Sleeping for 2 seconds." ; i=$((i+1)) ; sleep 2 ; done ;
-               if mount | grep -q "$2" ; then break ; else echo "[{{ $user.name }}] Failed to mount $2 retrying to run oneclient for dir=$2" ; fi ;
-             done ;
-             echo "[{{ $user.name }}] Mounted oneclient in '$2  ' for user={{ $user.name }}, in  dir=$2, from idp=$3, using TOKEN=$1";
-             rm /oneclient_mounting_{{ $user.name }} ;
-           };
-           mount_{{ $user.name }} "$ONECLIENT_ACCESS_TOKEN" "$logs_dir" "$mount_dir" "$idp" &
-           {{- end }}{{ end }}{{ end }}{{ end }}
-           echo "[main process] Waiting for all oneclients to mount..." ;
-           while find / -maxdepth 1 -name "oneclient_mounting_*" | grep -q "." ; do sleep 2 ; done ;
-           echo "[main process] All clients have been mounted." ;
-           touch /all_oneclients_mounted ;
-           sleep infinity & wait ;
+          - "sh"
+          - "-c"
+          - >
+            trap : TERM INT ;
+            echo "source /oneclient-mount.sh" >> ~/.bashrc ;
+            {{- if (index .Values "deployFromSources" "enabled") }}
+              while [ ! -f /tmp/sources_ready.txt ]; do sleep 1; done ;
+            {{- end }}
+            while [ "${ONECLIENT_PROVIDER_ID}" = "" ]; do
+              ONECLIENT_PROVIDER_ID="$(curl -k https://$ONECLIENT_PROVIDER_HOST/configuration 2>/dev/null | tr ',     ' '\n' | grep 'providerId' | tr -d '"' | cut -d ':' -f 2)";
+              if [ "$ONECLIENT_PROVIDER_ID" = "" ]; then
+                echo "[main process] Cannot obtain ONECLIENT_PROVIDER_ID=$ONECLIENT_PROVIDER_ID of Oneprovider host=$ONECLIENT_PROVIDER_HOST";
+                sleep 2;
+              fi;
+            done;
+            echo "[main process] Connecting users to Oneprovider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID";
+            {{- range $user := .Values.users }}{{ if hasKey . "oneclient"  }}{{ if has $.Values.suffix $user.oneclient }}{{ if .idps }}
+            {{- if (hasKey $user.idps "onepanel") }}{{ if ($user.idps.onepanel.enabled) }}
+            idp=onepanel;
+            {{- end }}{{- end }}
+            {{- if (hasKey $user.idps "keycloak") }}{{ if ($user.idps.keycloak.enabled) }}
+            idp=keycloak-rhea;
+            {{- end }}{{- end }}
+            ONECLIENT_ACCESS_TOKEN=$(curl --silent -k -u {{ $user.name }}:{{ $user.password }} http://{{ template "token-dispenser_name" $ }}/api/v1.0/token/$idp);
+            mount_dir="/mnt/oneclient/{{ $user.name }}";
+            mkdir -p "$mount_dir" ;
+            logs_dir="/tmp/oneclient/{{ $user.name }}";
+            mkdir -p "$logs_dir" ;
+            mount_{{ $user.name }}() {
+              touch /oneclient_mounting_{{ $user.name }} ;
+              all_{{ $user.name }}_providers=$(curl  -k -sS --tlsv1.2 -H "X-Auth-Token: $1" -X GET "https://{{ template "onezone_name" $ }}/api/v3/onezone/user/effective_providers") ;
+              echo "[{{ $user.name }}] List of oneproviders that support user={{ $user.name }}: $all_{{ $user.name }}_providers" ;
+              if ! echo "$all_{{ $user.name }}_providers" | grep -q $ONECLIENT_PROVIDER_ID ; then
+                echo "[{{ $user.name }}] User user={{ $user.name }} has no space supported by provider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID.";
+                while ! echo "$all_{{ $user.name }}_providers" | grep -q $ONECLIENT_PROVIDER_ID ; do
+                  echo "[{{ $user.name }}] Waiting for id=$ONECLIENT_PROVIDER_ID to appear on the list of effective providers=$all_{{ $user.name }}_providers for the user={{ $user.name }}" ;
+                  sleep 2 ;
+                  all_{{ $user.name }}_providers=$(curl  -k -sS --tlsv1.2 -H "X-Auth-Token: $1" -X GET "https://{{ template "onezone_name" $ }}/api/v3/onezone/user/effective_providers") ;
+                done ;
+              fi
+              echo "[{{ $user.name }}] Provider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID is on the list of effective providers=$all_{{ $user.name }}_providers of user={{ $user.name }}" ;
+              echo "[{{ $user.name }}] Mounting oneclient in $2 for user={{ $user.name }}, from idp=$3, using TOKEN=$1.";
+              while ! mount | grep -q "$2" ; do
+                oneclient -t "$1" --log-dir "$2" {{ $.Values.oneclientFlags }} "$3";
+                i=1;
+                max_i=30;
+                while ! mount | grep -q "$2" && [ $i -le $max_i ] ; do echo "[{{ $user.name }}] Waiting ${i}/${max_i} time for mount $2. Sleeping for 2 seconds." ; i=$((i+1)) ; sleep 2 ; done ;
+                if mount | grep -q "$2" ; then break ; else echo "[{{ $user.name }}] Failed to mount $2 retrying to run oneclient for dir=$2" ; fi ;
+              done ;
+              echo "[{{ $user.name }}] Mounted oneclient in '$2  ' for user={{ $user.name }}, in  dir=$2, from idp=$3, using TOKEN=$1";
+              rm /oneclient_mounting_{{ $user.name }} ;
+            };
+            mount_{{ $user.name }} "$ONECLIENT_ACCESS_TOKEN" "$logs_dir" "$mount_dir" "$idp" &
+            {{- end }}{{ end }}{{ end }}{{ end }}
+            echo "[main process] Waiting for all oneclients to mount..." ;
+            while find / -maxdepth 1 -name "oneclient_mounting_*" | grep -q "." ; do sleep 2 ; done ;
+            echo "[main process] All clients have been mounted." ;
+            touch /all_oneclients_mounted ;
+            sleep infinity & wait ;
         readinessProbe:
           exec:
             command:
-             - cat 
-             - /all_oneclients_mounted
+              - cat
+              - /all_oneclients_mounted
         securityContext:
           privileged: true
         lifecycle:

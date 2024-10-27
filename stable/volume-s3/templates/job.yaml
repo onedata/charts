@@ -35,7 +35,7 @@ spec:
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
-      {{- end }}  
+      {{- end }}
       restartPolicy: Never
 {{ include "imagePullSecrets" . | indent 6 }}
       {{- if (index .Values "wait_for_s3" "enabled") }}

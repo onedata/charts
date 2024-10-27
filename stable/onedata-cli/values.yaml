@@ -19,13 +19,13 @@ wait_for_onezone:
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
-# List of taints which are tolerated by the pods 
+# List of taints which are tolerated by the pods
 # when nodes are selected by a kubernetes scheduler
 # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 tolerations: []
 
-# Specify a map of key-value pairs. For the pod 
-# to be eligible to run on a node, the node 
+# Specify a map of key-value pairs. For the pod
+# to be eligible to run on a node, the node
 # must have each of the indicated key-value pairs as labels
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}

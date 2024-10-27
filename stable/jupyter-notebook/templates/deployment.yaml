@@ -88,34 +88,34 @@ spec:
           - name: SPACE_NAME
             value: "{{ .Values.space.name }}"
         command:
-         - "sh"
-         - "-c"
-         - >
-           echo "-k" > ~/.curlrc ;
-           ONECLIENT_PROVIDER_ID="$(curl -k https://$ONECLIENT_PROVIDER_HOST/configuration 2>/dev/null | tr ',' '\n' | grep 'providerId' | tr -d '"' | cut -d ':' -f 2)";
-           echo "[main process] Connecting users to Oneprovider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID";
-           {{- if (hasKey .Values.user.idps "onepanel") }}{{ if (.Values.user.idps.onepanel.enabled) }}
-           idp=onepanel;
-           {{- end }}{{- end }}
-           {{- if (hasKey .Values.user.idps "keycloak") }}{{ if (.Values.idps.keycloak.enabled) }}
-           idp=keycloak-rhea;
-           {{- end }}{{- end }}
-           ONECLIENT_ACCESS_TOKEN=$(curl --silent -u {{ .Values.user.name }}:{{ .Values.user.password }} http://{{ template "token-dispenser_name" $ }}/api/v1.0/token/$idp);
-           echo "ONECLIENT_ACCESS_TOKEN=$ONECLIENT_ACCESS_TOKEN" ;
-           all_{{ .Values.user.name }}_providers=$(curl  -k -sS --tlsv1.2 -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" -X GET "https://{{ template "onezone_name" $ }}/api/v3/onezone/user/effective_providers") ;
-           echo "[{{ .Values.user.name }}] List of oneproviders that support user={{ .Values.user.name }}: $all_{{ .Values.user.name }}_providers" ;
-           if ! echo "$all_{{ .Values.user.name }}_providers" | grep -q $ONECLIENT_PROVIDER_ID ; then
-             echo "[{{ .Values.user.name }}] User user={{ .Values.user.name }} has no space supported by provider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID.";
-             while ! echo "$all_{{ .Values.user.name }}_providers" | grep -q $ONECLIENT_PROVIDER_ID ; do
-               echo "[{{ .Values.user.name }}] Waiting for id=$ONECLIENT_PROVIDER_ID to appear on the list of effective providers=$all_{{ .Values.user.name }}_providers for the user={{ .Values.user.name }}" ;
-               sleep 2 ;
-               all_{{ .Values.user.name }}_providers=$(curl  -k -sS --tlsv1.2 -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" -X GET "https://{{ template "onezone_name" $ }}/api/v3/onezone/user/effective_providers") ;
-             done ; 
-           fi ;
-           echo "[{{ .Values.user.name }}] Provider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID is on the list of effective providers=$all_{{ .Values.user.name }}_providers of user={{ .Values.user.name }}" ;
-           echo "Uploading notebook file={{ .Values.demoFiles.thumbnailDemo }} to the space SPACE_NAME=$SPACE_NAME" ;
-           cat "/{{ .Values.demoFiles.thumbnailDemo }}" | curl -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" -v  -X PUT -d @- "https://$ONECLIENT_PROVIDER_HOST/cdmi/$SPACE_NAME/{{ .Values.demoFiles.thumbnailDemo }}" ;
-           jupyter notebook --NotebookApp.token='' --port=8888 --no-browser --allow-root --ip=0.0.0.0 ;
+          - "sh"
+          - "-c"
+          - >
+            echo "-k" > ~/.curlrc ;
+            ONECLIENT_PROVIDER_ID="$(curl -k https://$ONECLIENT_PROVIDER_HOST/configuration 2>/dev/null | tr ',' '\n' | grep 'providerId' | tr -d '"' | cut -d ':' -f 2)";
+            echo "[main process] Connecting users to Oneprovider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID";
+            {{- if (hasKey .Values.user.idps "onepanel") }}{{ if (.Values.user.idps.onepanel.enabled) }}
+            idp=onepanel;
+            {{- end }}{{- end }}
+            {{- if (hasKey .Values.user.idps "keycloak") }}{{ if (.Values.idps.keycloak.enabled) }}
+            idp=keycloak-rhea;
+            {{- end }}{{- end }}
+            ONECLIENT_ACCESS_TOKEN=$(curl --silent -u {{ .Values.user.name }}:{{ .Values.user.password }} http://{{ template "token-dispenser_name" $ }}/api/v1.0/token/$idp);
+            echo "ONECLIENT_ACCESS_TOKEN=$ONECLIENT_ACCESS_TOKEN" ;
+            all_{{ .Values.user.name }}_providers=$(curl  -k -sS --tlsv1.2 -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" -X GET "https://{{ template "onezone_name" $ }}/api/v3/onezone/user/effective_providers") ;
+            echo "[{{ .Values.user.name }}] List of oneproviders that support user={{ .Values.user.name }}: $all_{{ .Values.user.name }}_providers" ;
+            if ! echo "$all_{{ .Values.user.name }}_providers" | grep -q $ONECLIENT_PROVIDER_ID ; then
+              echo "[{{ .Values.user.name }}] User user={{ .Values.user.name }} has no space supported by provider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID.";
+              while ! echo "$all_{{ .Values.user.name }}_providers" | grep -q $ONECLIENT_PROVIDER_ID ; do
+                echo "[{{ .Values.user.name }}] Waiting for id=$ONECLIENT_PROVIDER_ID to appear on the list of effective providers=$all_{{ .Values.user.name }}_providers for the user={{ .Values.user.name }}" ;
+                sleep 2 ;
+                all_{{ .Values.user.name }}_providers=$(curl  -k -sS --tlsv1.2 -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" -X GET "https://{{ template "onezone_name" $ }}/api/v3/onezone/user/effective_providers") ;
+              done ;
+            fi ;
+            echo "[{{ .Values.user.name }}] Provider host=$ONECLIENT_PROVIDER_HOST id=$ONECLIENT_PROVIDER_ID is on the list of effective providers=$all_{{ .Values.user.name }}_providers of user={{ .Values.user.name }}" ;
+            echo "Uploading notebook file={{ .Values.demoFiles.thumbnailDemo }} to the space SPACE_NAME=$SPACE_NAME" ;
+            cat "/{{ .Values.demoFiles.thumbnailDemo }}" | curl -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" -v  -X PUT -d @- "https://$ONECLIENT_PROVIDER_HOST/cdmi/$SPACE_NAME/{{ .Values.demoFiles.thumbnailDemo }}" ;
+            jupyter notebook --NotebookApp.token='' --port=8888 --no-browser --allow-root --ip=0.0.0.0 ;
         ports:
           - containerPort: 8888
         readinessProbe:

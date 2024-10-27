@@ -12,7 +12,7 @@ storage: 1000T
 persistentVolumeReclaimPolicy: Retain
 
 # The whole chart will be deployed as helm pre-install hook
-# it will not be managed by helm and not be deleted 
+# it will not be managed by helm and not be deleted
 # upon release deletion. Thanks to it, other pods using nfs server
 # will have time to umount their shares in a clean fashion
 deployAsPreInstallHook: false
@@ -20,7 +20,7 @@ deployAsPreInstallHook: false
 # When deployAsPreInstallHook is set to true you you want a way
 # to delete this chart's objects. This will create a post-delete
 # helm hook job that will do that.
-# objects 
+# objects
 cleanUpJob:
   enabled: false
   image: groundnuty/k8s-wait-for:v2.0
@@ -43,7 +43,7 @@ exports:
 #     dataPath: /data
 #     readOnly: false
 #     mountPermissions: 777
-#     permissions: 
+#     permissions:
 #       - path: /
 #         mask: 777
 
@@ -53,13 +53,13 @@ exports:
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
-# List of taints which are tolerated by the pods 
+# List of taints which are tolerated by the pods
 # when nodes are selected by a kubernetes scheduler
 # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 tolerations: []
 
-# Specify a map of key-value pairs. For the pod 
-# to be eligible to run on a node, the node 
+# Specify a map of key-value pairs. For the pod
+# to be eligible to run on a node, the node
 # must have each of the indicated key-value pairs as labels
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}

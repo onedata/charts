@@ -96,7 +96,6 @@ spec:
             if [ "$STORAGE_ID" = "" ]; then echo "ERROR: unable get storage id for storage name={{ .storage_name }} in provider={{ template "providerName" .provider }}" ; exit 1 ; fi ;
             echo "Supporting space name={{ $space.name }} id=$SPACE_ID, with with storage name={{ .storage_name }}, storage_id=$STORAGE_ID, on provider=$ONEPROVIDER_HOST, using space support token token=$SPACE_TOKEN." ;
             storage_support_json=$(cat <<EEOF
-
             {
               "token": "$SPACE_TOKEN",
               "size": {{ .size | quote }},
@@ -118,9 +117,7 @@ spec:
                 }
               {{- end }}{{- end }}
             }
-
             EEOF
-            
             ) ;
             echo "$storage_support_json" ;
             {{/* see https://github.com/stedolan/jq/issues/1497 for js flags here */}}

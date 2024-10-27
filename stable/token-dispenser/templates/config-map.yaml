@@ -15,7 +15,7 @@ data:
     idps:
 {{- range .Values.config }}
   {{- if eq .type "onepanel" }}
-      onepanel: 
+      onepanel:
         url: "https://{{ template "onezone_service_url" $ }}"
         type: onepanel
   {{- end }}

@@ -1,5 +1,5 @@
 {{/*
-Although, the parent keycloak chart provides keycloak services, 
+Although, the parent keycloak chart provides keycloak services,
 we need a service which name and labels are in line with
 a standard of Onedata charts.
 */}}

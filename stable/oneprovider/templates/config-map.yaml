@@ -63,12 +63,12 @@ data:
       nodes:
         {{- $r := . -}}
         {{- range $i := until (int (.Values.oneprovider_nodes_count)) }}
-        n{{ $i }}: 
+        n{{ $i }}:
           hostname: {{ template "fullname" $r }}-{{ $i }}
         {{- end }}
       managers:
     {{- if .Values.cluster_config.managers }}
-        mainNode: n{{ first .Values.cluster_config.managers }} 
+        mainNode: n{{ first .Values.cluster_config.managers }}
     {{- else }}
         mainNode: n0
     {{- end }}
@@ -330,6 +330,6 @@ data:
       adminEmail: {{ .Values.adminEmail }}
       geoLatitude: {{ .Values.geoLatitude }}
       geoLongitude: {{ .Values.geoLongitude }}
-    # TODO: make it possible for onedata services to communicate using 
+    # TODO: make it possible for onedata services to communicate using
     # system configured DNS. this will allow to put here just service name
     # instead of FQDN

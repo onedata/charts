@@ -60,7 +60,7 @@ spec:
         {{- if (index .Values "exports") }}
           {{- range $export := (index .Values "exports" ) }}
             {{- if $export.image }}
-            while [ ! -d "/exports/{{ $export.name }}" ] ; do "Waiting for /exports/{{ $export.name }} to be created." ; sleep 1 ; done ; 
+            while [ ! -d "/exports/{{ $export.name }}" ] ; do "Waiting for /exports/{{ $export.name }} to be created." ; sleep 1 ; done ;
             while [ -z "$(ls -A /exports/{{ $export.name }})" ]; do echo "Waiting for /exports/{{ $export.name }} to be mounted." ; sleep 1 ; done ;
             {{- end }}
           {{- end }}
@@ -84,7 +84,7 @@ spec:
             containerPort: 111
         env:
           - name: SHARED_DIRECTORY
-            value: /exports 
+            value: /exports
       {{- if (index .Values "exports") }}
         {{- range $i := (until (len (index .Values "exports" ) ) ) }}
           - name: EXTRA_SHARED_DIRECTORY_{{ add $i 1 }}

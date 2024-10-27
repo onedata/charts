@@ -30,7 +30,7 @@ oneprovidersWorkerOverlayConfig: &oneprovidersPanelOverlayConfig |-
 oneclients_enabled: &oneclients_enabled true
 onedata_cli_enabled: &onedata_cli_enabled true
 
-luma_enabled: &luma_enabled false 
+luma_enabled: &luma_enabled false
 
 jupyter_notebook_enabled: &jupyter_notebook_enabled true
 

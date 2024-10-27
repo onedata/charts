@@ -55,12 +55,11 @@ spec:
             realmId={{ .Values.init.realmId }};
             clientName={{ .Values.init.clientName }};
             onezone_url=https://{{ template "onezone_service_url" . }};
-            
+
             export KEYCLOAK_TOKEN={{ template "onedata-chart-utils.createKeycloakToken" $ }};
             echo "Created an short lived access token KEYCLOAK_TOKEN=$KEYCLOAK_TOKEN";
-            
+
             keycloak_modify_master_realm=$(cat <<EEOF
-            
             {
               "ssoSessionIdleTimeout": 31536000,
               "ssoSessionMaxLifespan": 31536000,
@@ -74,19 +73,16 @@ spec:
               "refreshTokenMaxReuse": 31536000,
               "actionTokenGeneratedByUserLifespan": 31536000
             }
-            
             EEOF
-            
             );
-            
+
             echo "$keycloak_modify_master_realm" | curl --silent -X PUT "$keycloak_url/auth/admin/realms/master" -H 'Content-Type: application/json' -H "Authorization: Bearer $KEYCLOAK_TOKEN" -d @- ;
             echo "Modified realm=master to make all tokens and codes long-lived";
-            
+
             export KEYCLOAK_TOKEN=$(curl --silent --max-time 10 --retry 5 --retry-delay 2 --retry-max-time 32 -X POST "$keycloak_url/auth/realms/master/protocol/openid-connect/token" -H "Content-Type: application/x-www-form-urlencoded" -d "username=$adminUsername" -d "password=$adminPassword" -d 'grant_type=password' -d 'client_id=admin-cli' | jq -r '.access_token');
             echo "Created a long-lived access token KEYCLOAK_TOKEN=$KEYCLOAK_TOKEN";
-            
+
             keycloak_create_realm_json=$(cat <<EEOF
-            
             {
               "realm": "$realmId",
               "enabled": true,
@@ -103,16 +99,13 @@ spec:
               "refreshTokenMaxReuse": 31536000,
               "actionTokenGeneratedByUserLifespan": 31536000
             }
-            
             EEOF
-            
             );
             echo "$keycloak_create_realm_json" | curl --silent -X POST "$keycloak_url/auth/admin/realms" -H 'Content-Type: application/json' -H "Authorization: Bearer $KEYCLOAK_TOKEN" -d @- ;
             echo "Created a realm realmId=$realmId";
             [ "$realmId" = "" ] && exit 1 ;
-            
+
             keycloak_create_client_json=$(cat <<EEOF
-            
             {
               "clientId": "${clientName}",
               "enabled": true,
@@ -123,20 +116,17 @@ spec:
               "baseUrl": "/auth/realms/${realmId}/account",
               "implicitFlowEnabled": true
             }
-            
             EEOF
-            
             );
             clientId=$(echo "$keycloak_create_client_json" | curl -v -X POST "$keycloak_url/auth/admin/realms/$realmId/clients" -H 'Content-Type: application/json' -H "Authorization: Bearer $KEYCLOAK_TOKEN" -d @- 2>&1 | grep 'Location:' | sed -ne 's#^.*/\(.*\)$#\1#p' | tr -d $'\r');
             echo "Created a clinet clientId=$clientId";
             [ "$clientId" = "" ] && exit 1 ;
-            
+
             clientSecret=$(curl -v -X POST "$keycloak_url/auth/admin/realms/$realmId/clients/$clientId/client-secret" -H 'Content-Type: application/json' -H "Authorization: Bearer $KEYCLOAK_TOKEN" 2>/dev/null | jq -r '.value');
             echo "Secret of clientId=$clientId is clientSecret=$clientSecret";
             [ "$clientSecret" = "" ] && exit 1 ;
-            
+
             keycloak_create_mapper_json=$(cat <<EEOF
-            
             {
               "name": "groups",
               "protocol": "openid-connect",
@@ -151,25 +141,22 @@ spec:
                 "userinfo.token.claim": "true"
               }
             }
-            
             EEOF
-            
             );
-            
             admin_cli_client_id=$(curl --silent -X GET "$keycloak_url/auth/admin/realms/$realmId/clients" -H 'Content-Type: application/json' -H "Authorization: Bearer $KEYCLOAK_TOKEN" | jq -r '.[] | select(.clientId=="admin-cli").id' );
             echo -n "Creating a mapper for client=admin-cli admin_cli_client_id=$admin_cli_client_id [response: " ;
             echo "$keycloak_create_mapper_json" | curl --silent -w "'%{http_code}'" -X POST "$keycloak_url/auth/admin/realms/$realmId/clients/$admin_cli_client_id/protocol-mappers/models" -H 'Content-Type: application/json' -H "Authorization: Bearer $KEYCLOAK_TOKEN" -d @-;
             echo "]. Success." ;
-            
+
             echo -n "Creating a mapper for clientName=$clientName clientId=$clientId [response: " ;
             echo "$keycloak_create_mapper_json" | curl --silent -w "'%{http_code}'" -X POST "$keycloak_url/auth/admin/realms/$realmId/clients/$clientId/protocol-mappers/models" -H 'Content-Type: application/json' -H "Authorization: Bearer $KEYCLOAK_TOKEN" -d @-;
             echo "]. Success." ;
-            
+
             {{- if .Values.init.publishClientSecret }}
             echo "Setting a secret in a config map {{ template "fullname" . }}-config" ;
             kubectl get cm {{ template "fullname" . }}-config -o yaml | sed "s/KEYCLOAK_APP_CELINT_SECRET_SUPPLIED_AT_RUNTIME/$clientSecret/" | kubectl apply -f - ;
             {{- end }}
-            
+
             {{- range .Values.users }}{{- if (hasKey . "idps") }}{{- if (hasKey .idps "keycloak") }}{{- if (hasKey .idps.keycloak "mode" )}}{{- if and .idps.keycloak.enabled (eq .idps.keycloak.mode "duringKeycloakDeployment")}}
             {{ template "onedata-chart-utils.createKeycloakUser" dict "user" . }}
             {{- end }}{{- end }}{{- end }}{{- end }}{{- end }}
