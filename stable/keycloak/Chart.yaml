@@ -16,5 +16,5 @@ dependencies:
   repository: "@codecentric"
 
 - name: onedata-chart-utils
-  version: 0.2.15
+  version: 0.2.16
   repository: file://../onedata-chart-utils
