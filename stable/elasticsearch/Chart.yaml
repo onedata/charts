@@ -1,6 +1,6 @@
 apiVersion: v2
 name: elasticsearch
-version: 0.1.3
+version: 0.1.4
 description: Extension of the stable/elasticsearch chart
 home: https://github.com/onedata/charts/stable/elasticsearch
 sources:

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: token-dispenser
-version: 0.1.5
+version: 0.1.6
 description: Proxy for requesting Onezone API tokens
 keywords:
   - token
