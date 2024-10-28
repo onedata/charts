@@ -1,6 +1,6 @@
 apiVersion: v2
 name: onedata-3p
-version: 0.2.16
+version: 0.2.17
 description: Complex Onedata deployment with one Onezone, three Oneproviders and S3, CEPH, NFS, POSIX backends.
 keywords:
   - onedata
@@ -15,23 +15,23 @@ appVersion: 21.02.7
 
 dependencies:
 - name: onezone
-  version: 0.2.17
+  version: 0.2.18
   repository: file://../onezone
 
 - name: oneprovider
   alias: oneprovider-krakow
-  version: 0.2.19
+  version: 0.2.20
   repository: file://../oneprovider
   condition: oneprovider-krakow.enabled
 
 - name: oneprovider
   alias: oneprovider-paris
-  version: 0.2.19
+  version: 0.2.20
   repository: file://../oneprovider
   condition: oneprovider-paris.enabled
 
 - name: oneprovider
   alias: oneprovider-lisbon
-  version: 0.2.19
+  version: 0.2.20
   repository: file://../oneprovider
   condition: oneprovider-lisbon.enabled

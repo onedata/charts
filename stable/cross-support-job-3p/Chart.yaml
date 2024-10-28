@@ -1,6 +1,6 @@
 apiVersion: v2
 name: cross-support-job-3p
-version: 0.2.18
+version: 0.2.19
 description: Chart that populates deployment environment created with onedata/onedata-3p chart with spaces
 keywords:
   - onedata
@@ -18,7 +18,7 @@ dependencies:
   repository: file://../onedata-chart-utils
 
 - name: onedata-3p
-  version: 0.2.16
+  version: 0.2.17
   repository: file://../onedata-3p
   condition: onedata-3p.enabled
   import-values:
