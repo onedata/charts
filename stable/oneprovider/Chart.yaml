@@ -15,12 +15,12 @@ appVersion: 21.02.7
 
 dependencies:
 - name: oneclient
-  version: 0.2.15
+  version: 0.2.17
   repository: file://../oneclient
   condition: oneclient.enabled
 
 - name: onedata-cli
-  version: 0.2.16
+  version: 0.2.17
   repository: file://../onedata-cli
   condition: onedata-cli.enabled
 
@@ -29,47 +29,47 @@ dependencies:
   repository: file://../onedata-chart-utils
 
 - name: volume-s3
-  version: 0.2.11
+  version: 0.2.12
   repository: file://../volume-s3
   condition: volume-s3.enabled
 
 - name: volume-ceph
-  version: 0.2.12
+  version: 0.2.13
   repository: file://../volume-ceph
   condition: volume-ceph.enabled
 
 - name: volume-nfs
-  version: 0.2.14
+  version: 0.2.15
   repository: file://../volume-nfs
   condition: volume-nfs.enabled
 
 - name: volume-gluster
-  version: 0.2.9
+  version: 0.2.10
   repository: file://../volume-gluster
   condition: volume-gluster.enabled
 
 - name: volume-swift
-  version: 0.2.9
+  version: 0.2.10
   repository: file://../volume-swift
   condition: volume-swift.enabled
 
 - name: volume-webdav
-  version: 0.2.3
+  version: 0.2.4
   repository: file://../volume-webdav
   condition: volume-webdav.enabled
 
 - name: volume-dcache
-  version: 0.2.3
+  version: 0.2.4
   repository: file://../volume-dcache
   condition: volume-dcache.enabled
 
 - name: luma
-  version: 0.2.9
+  version: 0.2.10
   repository: file://../luma
   condition: luma.enabled
 
 - name: jupyter-notebook
-  version: 0.2.2
+  version: 0.2.3
   repository: file://../jupyter-notebook
   condition: jupyter-notebook.enabled
 
@@ -79,6 +79,6 @@ dependencies:
   condition: openfaas.enabled
 
 - name: openfaas-pod-status-monitor
-  version: 0.1.0
+  version: 0.1.1
   repository: file://../openfaas-pod-status-monitor
   condition: openfaas-pod-status-monitor.enabled

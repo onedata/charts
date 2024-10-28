@@ -1,6 +1,6 @@
 apiVersion: v2
 name: volume-webdav
-version: 0.2.3
+version: 0.2.4
 description: A single container wevdav setup, suitable for testing purposes.
 keywords:
   - onedata
@@ -9,8 +9,6 @@ keywords:
 maintainers:
   - name: Michal Orzechowski
     email: orzechowski.michal@gmail.com
-engine: gotpl
-appVersion: latest
 
 dependencies:
 - name: onedata-chart-utils

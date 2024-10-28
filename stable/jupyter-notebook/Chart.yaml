@@ -1,6 +1,6 @@
 apiVersion: v2
 name: jupyter-notebook
-version: 0.2.2
+version: 0.2.3
 description: jupyter-notebook
 keywords:
   - onedata

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: volume-dcache
-version: 0.2.3
+version: 0.2.4
 description: A single container dcache setup, suitable for testing purposes.
 keywords:
   - onedata

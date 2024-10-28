@@ -1,6 +1,6 @@
 apiVersion: v2
 name: volume-ceph
-version: 0.2.12
+version: 0.2.13
 description: A single container CEPH setup, suitable for testing purposes.
 keywords:
   - onedata

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: openfaas-pod-status-monitor
-version: 0.1.0
+version: 0.1.1
 description: Allows to capture and process events of k8s pods orchestrated by the OpenFaaS platform.
 keywords:
   - openfaas

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: volume-gluster
-version: 0.2.9
+version: 0.2.10
 description: A single container gluster setup, suitable for testing purposes.
 keywords:
   - onedata

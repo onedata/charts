@@ -1,6 +1,6 @@
 apiVersion: v2
 name: oneclient
-version: 0.2.16
+version: 0.2.17
 description: Oneclient is the Onedata command line interface for mounting distributed virtual filesystem on local machines
 keywords:
   - onedata
