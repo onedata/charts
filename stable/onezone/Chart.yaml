@@ -1,6 +1,6 @@
 apiVersion: v2
 name: onezone
-version: 0.2.17
+version: 0.2.18
 description: Onezone is a Onedata service enabling federation of storage providers and user authentication.
 keywords:
   - onedata
