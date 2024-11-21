@@ -1,0 +1,10 @@
+dependencies:
+  - name: onedata-chart-utils
+    version: 0.2.14
+    repository: https://onedata.github.io/charts/
+  - name: cluster-manager
+    version: 0.2.18-rc21
+    repository: file://../cluster-manager
+  - name: couchbase
+    version: 0.1.0
+    repository: file://../couchbase

@@ -1,0 +1,124 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: {{ .Chart.Name }}
+    release: {{ template "releaseName" . }}
+    heritage: {{ .Release.Service }}
+    component: "cluster-manager"
+  annotations:
+    version: "{{ .Chart.Version }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+      chart: {{ .Chart.Name }}
+      release: {{ template "releaseName" . }}
+      heritage: {{ .Release.Service }}
+      component: "cluster-manager"
+  serviceName: {{ template "fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        chart: {{ .Chart.Name }}
+        release: {{ template "releaseName" . }}
+        heritage: {{ .Release.Service }}
+        component: "cluster-manager"
+        {{- if (index .Values "deployFromSources" "enabled") }}
+        sources: "{{ .Values.deployFromSources.timestamp }}"
+        {{- end }}
+      annotations:
+        version: "{{ .Chart.Version }}"
+    spec:
+      subdomain: {{ template "fullname" . }}
+      hostNetwork: {{ template "hostNetwork" . }}
+      terminationGracePeriodSeconds: 3
+      {{- if or .Values.affinity .Values.onedata_anti_affinity_enabled }}
+      affinity:
+      {{- if .Values.onedata_anti_affinity_enabled }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: component
+                operator: In
+                values:
+                - oneprovider
+                - onezone
+              - key: release
+                operator: In
+                values:
+                - {{ template "releaseName" . }}
+            topologyKey: kubernetes.io/hostname
+      {{- end }}
+      {{- if .Values.affinity }}
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+{{ include "imagePullSecrets" . | indent 6 }}
+      containers:
+      - name: cluster-manager
+        image: {{ .Values.image }}
+        # imagePullPolicy: {{ template "imagePullPolicy" dict "root" . }}
+        imagePullPolicy: Always
+        {{- if or .Values.cpu .Values.memory }}
+        resources:
+          requests:
+          {{- if .Values.cpu }}
+            cpu: {{ .Values.cpu }}
+          {{- end }}
+          {{- if .Values.memory }}
+            memory: {{ .Values.memory }}
+          {{- end }}
+        {{- end }}
+        ports:
+          - containerPort: 80
+          - containerPort: 443
+          - containerPort: 6665
+          - containerPort: 9443
+        {{- range untilStep 9100 9139 1 }}
+          - containerPort: {{ . }}
+        {{- end }}
+        command:
+          - /bin/bash
+          - -c
+          - >
+          {{- if (index .Values "deployFromSources" "enabled") }}
+            echo "Waiting for sources";
+            while [ ! -f /tmp/sources_ready.txt ]; do sleep 1; done ;
+            export SOURCES_OVERRIDE=$(cat /tmp/sources_ready.txt) ;
+            echo $SOURCES_OVERRIDE ;
+          {{- end }}
+            /run.sh
+        stdin: true
+        tty: true
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - name: cluster-manager-config
+            mountPath: /app.config.template
+            subPath: app.config.template
+          - name: cluster-manager-config
+            mountPath: /vm.args.template
+            subPath: vm.args.template
+          {{- if (index .Values "external-volume-mounts") }}
+{{ toYaml (index .Values "external-volume-mounts") | indent 10 }}
+          {{- end }}
+      volumes:
+        - name: cluster-manager-config
+          configMap:
+            name: {{ template "fullname" . }}-config
+        {{- if (index .Values "external-volumes") }}
+{{ toYaml (index .Values "external-volumes") | indent 8 }}
+        {{- end }}

@@ -1,0 +1,175 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}-config
+  labels:
+    app: {{ template "fullname" . }}
+    chart: {{ .Chart.Name }}
+    release: {{ template "releaseName" .  }}
+    heritage: {{ .Release.Service }}
+    component: "cluster-worker"
+  annotations:
+    version: "{{ .Chart.Version }}"
+data:
+  CLUSTER-WORKER_CONFIG: |-
+    cluster-worker:
+      domain: "{{ template "service_url" . }}"
+  vm.args.template: |-
+    ## Name of the node
+    -name cluster_worker@${HOSTNAME}
+
+    ## Cookie for distributed erlang
+    -setcookie cluster_node
+
+    ## Treat lager warnings as warnings
+    +W w
+
+    ## Increase number of concurrent ports/sockets
+    ## Warning: too high growth of this param consumes a lot of memory
+    -env ERL_MAX_PORTS 1000000
+
+    ## Increase number of processes
+    +P 1000000
+
+    ## Set the location of crash dumps
+    -env ERL_CRASH_DUMP ./log/erl_crash.dump
+
+    ## Upgrade ets limit (tmp ets are used for transactions)
+    -env ERL_MAX_ETS_TABLES 1000000
+
+    ## Configure schedulers
+    ## +S 32:32
+    ## +SDcpu 16:8
+    +K true
+    ## +sfwi 500
+    +stbt db
+    +sbwt none
+    ## +scl false
+    ## +sub true
+
+    ## Enable Symmetric Multiprocessing
+    -smp enable
+
+    ## Set default heap size (256 MB with 8byte word)
+    ## +hmax 33554432  
+  app.config.template: |-
+    [
+      % NOTE: this is needed to deploy oneprovider on distributed env on dockers
+      % Range of ports that will be used by erlang nodes to communicate
+      {kernel, [
+          {inet_dist_listen_min, 9100},
+          {inet_dist_listen_max, 9139}
+      ]},
+
+      %% SASL config
+      {sasl, [{sasl_error_logger, false}]},
+
+      %% logger configuration
+      {lager, [
+          {colored, true},
+          {log_root, "./log"},
+          {handlers, [
+              %% show info level or higher level logs at console
+              {lager_console_backend, [
+                  {level, info}, {formatter, lager_default_formatter},
+                  {formatter_config, [color, "[", sev, " ", time, " ", pid, "] ", message, "\e[0m\r\n"]}
+              ]},
+              %% rotate error log when it reaches 50 MB; keep 10 rotated logs
+              {lager_file_backend, [
+                  {file, "error.log"},
+                  {level, error},
+                  {size, 52428800},
+                  {count, 10},
+                  {formatter, lager_default_formatter},
+                  {formatter_config, ["[", sev, " ", date, " ", time, " ", pid, "] ", message, "\n"]}
+              ]},
+              %% rotate info log when it reaches 50 MB; keep 10 rotated logs
+              {lager_file_backend, [
+                  {file, "info.log"},
+                  {level, info},
+                  {size, 52428800},
+                  {count, 10},
+                  {formatter, lager_default_formatter},
+                  {formatter_config, ["[", sev, " ", date, " ", time, " ", pid, "] ", message, "\n"]}
+              ]},
+              %% rotate debug log when it reaches 50 MB; keep 10 rotated logs
+              {lager_file_backend, [
+                  {file, "debug.log"},
+                  {level, debug},
+                  {size, 52428800},
+                  {count, 10},
+                  {formatter, lager_default_formatter},
+                  {formatter_config, ["[", sev, " ", date, " ", time, " ", pid, "] ", message, "\n"]}
+              ]}
+          ]},
+          {error_logger_hwm, 200},
+          % When lager should change mode to synchronous (log queue is longer than async_threshold)
+          {async_threshold, 500},
+          % When lager should return from mode to synchronous (log queue is shorter than (async_threshold - async_threshold_window)
+          {async_threshold_window, 50}
+      ]},
+
+      {cluster_worker, [
+          {monitoring_log_file, "./log/node_manager_monitoring.log"},
+          {throttling_log_file, "./log/throttling_monitoring.log"},
+
+          %% ===================================================================
+          %% VIEW TRAVERSE
+          %% ===================================================================
+          {view_traverse_default_master_jobs_limit, 10},
+          {view_traverse_default_slave_jobs_limit, 20},
+          {view_traverse_default_parallelism_limit, 5},
+
+          %% ===================================================================
+          %% HA
+          %% ===================================================================
+          % Method of backup data propagation (see ha_datastore.hrl):
+          % cast - asynchronous method that give small overhead but does not provide guarantee that backup data
+          %    propagation is finished at the end of datastore operation
+          % call - synchronous method that give larger overhead but provides guarantee that backup data propagation
+          %    is finished at the end of datastore operation
+          {ha_propagation_method, cast},
+
+          {db_nodes, ['{{ .Release.Name }}-couchbase-0.{{ .Release.Name }}-couchbase.default.svc.cluster.local:8091']},
+          {cm_nodes, ['cluster_manager@{{ .Release.Name }}-cluster-manager-0.{{ .Release.Name }}-cluster-manager.default.svc.cluster.local']},
+
+          {excluded_exometer_modules, [datastore_router]},
+          {exometer_lager_reporter, false},
+          {exometer_data_points_number, 100},
+
+          % Should couchbase pool force garbage collection (options: on, off)
+          {couchbase_pool_gc, off},
+          % Should tp force garbage collection (options: on, off)
+          {tp_gc, off},
+
+          % Number of tp subtrees
+          % (tree of tp_servers is divided into several subtrees)
+          {tp_subtrees_number, 20},
+          % Enable handling of link and doc calls in single tp proc
+          {aggregate_tp, true},
+          % Size of tp key space (0 - unlimited)
+          {tp_space_size, {{ .Values.tp_space_size | default 2000 }}},
+
+          {datastore_cache_size, [
+              {memory, 50000},
+              {disc, 50000}
+          ]},
+
+          {couchbase_durability_interval, 500},
+          {couchbase_pool_size, [
+              {'_', [
+                  {read, 5},
+                  {write, 20},
+                  {changes, 3}
+              ]}
+          ]},
+          {couchbase_pool_batch_size, 1000},
+          {couchbase_pool_max_batch_size, 2000},
+          {couchbase_pool_min_batch_size, 500},
+
+          %% Should cache fold link token be cached by cache writer
+          {cache_fold_token, true},
+          %% Time of fold link token caching by cache writer
+          {fold_cache_timeout, 30000}
+      ]}
+    ].
